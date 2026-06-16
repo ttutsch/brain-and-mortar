@@ -63,7 +63,7 @@ export function HomeView({
       <header className="topbar">
         <div className="brand">
           <span className="dot" />
-          The T Family
+          Brain &amp; Mortar
         </div>
         <div className="right">
           <button

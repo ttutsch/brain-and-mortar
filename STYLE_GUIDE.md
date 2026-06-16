@@ -1,4 +1,4 @@
-# The T Family — Visual Style Guide & AI Illustration Brief
+# Brain & Mortar — Visual Style Guide & AI Illustration Brief
 
 > Companion to [DESIGN.md](DESIGN.md). The design doc says *what* we're building; this guide says *what it looks like and how we generate it*. Anyone running an image-gen tool should read this end-to-end before producing a single shipped asset.
 

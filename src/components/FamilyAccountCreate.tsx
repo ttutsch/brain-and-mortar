@@ -60,7 +60,7 @@ export function FamilyAccountCreate({ onCreated }: Props) {
     <div className="centered-screen">
       <div className="card">
         <div className="welcome-hero">
-          <span className="badge">The T Family</span>
+          <span className="badge">Brain &amp; Mortar</span>
           <h1 className="card-title">Welcome!</h1>
           <p className="card-subtitle">
             Start by setting up your family. The parent account holds the keys —

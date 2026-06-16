@@ -1,4 +1,6 @@
-# The T Family — Game Design Document
+# Brain & Mortar — Game Design Document
+
+*Game title: **Brain & Mortar** (a play on "brick and mortar" — brain + building). The family in the story remains the T Family.*
 
 *Working draft, v0.2 — names, numbers, and scope are all up for editing.*
 

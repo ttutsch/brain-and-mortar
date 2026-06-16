@@ -1,8 +1,10 @@
-# The T Family 🏡
+# Brain & Mortar 🏡
+
+*Learn. Build. Explore.*
 
 A story-driven learning game for kids from **kindergarten through Grade 8**. Players join the T Family — who've just moved into a fixer-upper — and complete short academic missions (math, science, geography, history, coding/logic, Canadian social studies) to fix up and upgrade the house, earning big family trips along the way.
 
-**▶ Play it: https://ttutsch.github.io/t-family-game/** &nbsp;<sub>(live once GitHub Pages is enabled — see below)</sub>
+**▶ Play it: https://ttutsch.github.io/brain-and-mortar/** &nbsp;<sub>(live once GitHub Pages is enabled — see below)</sub>
 
 ---
 
