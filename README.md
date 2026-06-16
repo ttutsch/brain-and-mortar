@@ -48,3 +48,4 @@ A workflow at `.github/workflows/deploy.yml` builds and publishes automatically 
 ## Status
 
 Working prototype. See `DESIGN.md` for the full design doc and roadmap. Before any wide release, the design notes flag a content/curriculum review (especially Indigenous and difficult-history topics) as still outstanding.
+# brain-and-mortar
