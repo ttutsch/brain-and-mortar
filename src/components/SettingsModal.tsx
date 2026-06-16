@@ -1,0 +1,86 @@
+import type { PlayerSettings } from '../types';
+
+interface Props {
+  playerName: string;
+  settings: PlayerSettings;
+  onChange: (next: PlayerSettings) => void;
+  onClose: () => void;
+}
+
+/**
+ * Per-profile accessibility settings (DESIGN.md §15). The narration toggle
+ * stays hidden until any audio content exists (§16) — the data field is
+ * already wired through.
+ */
+export function SettingsModal({ playerName, settings, onChange, onClose }: Props) {
+  function toggle(key: 'highContrast' | 'reducedMotion' | 'dyslexiaFont') {
+    onChange({ ...settings, [key]: !settings[key] });
+  }
+
+  return (
+    <div
+      role="dialog"
+      aria-label="Settings"
+      style={{
+        position: 'fixed', inset: 0, background: 'rgba(42, 37, 34, 0.5)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, zIndex: 150,
+      }}
+      onClick={onClose}
+    >
+      <div className="card" onClick={(e) => e.stopPropagation()}>
+        <div className="row between" style={{ marginBottom: 6 }}>
+          <h2 className="card-title" style={{ margin: 0, fontSize: 24 }}>Settings</h2>
+          <button type="button" className="btn" onClick={onClose}>Done</button>
+        </div>
+        <p className="card-subtitle">For {playerName}’s profile. Saved automatically.</p>
+
+        <div className="stack" style={{ gap: 10 }}>
+          <SettingToggle
+            label="High contrast"
+            description="Stronger colours and darker text for easier reading."
+            checked={settings.highContrast}
+            onToggle={() => toggle('highContrast')}
+          />
+          <SettingToggle
+            label="Easy-read font"
+            description="A rounder font that some readers find easier."
+            checked={!!settings.dyslexiaFont}
+            onToggle={() => toggle('dyslexiaFont')}
+          />
+          <SettingToggle
+            label="Reduce motion"
+            description="Turns off moving clouds, pulses, and other animations."
+            checked={settings.reducedMotion}
+            onToggle={() => toggle('reducedMotion')}
+          />
+        </div>
+
+        <p className="muted" style={{ fontSize: '0.85em', marginTop: 16, marginBottom: 0 }}>
+          Tip: if your device asks for reduced motion, the game already respects that automatically.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function SettingToggle({
+  label, description, checked, onToggle,
+}: { label: string; description: string; checked: boolean; onToggle: () => void }) {
+  return (
+    <button
+      type="button"
+      className={`setting-row${checked ? ' on' : ''}`}
+      onClick={onToggle}
+      role="switch"
+      aria-checked={checked}
+    >
+      <span className="setting-info">
+        <strong>{label}</strong>
+        <span className="muted setting-desc">{description}</span>
+      </span>
+      <span className="setting-switch" aria-hidden="true">
+        <span className="setting-knob" />
+      </span>
+    </button>
+  );
+}

@@ -1,0 +1,121 @@
+/* ---- Design tokens: warm earth-tone base with bright accent pops (see DESIGN.md §6). ---- */
+:root {
+  /* Base palette */
+  --color-cream: #FFF6EC;
+  --color-cream-2: #FBE9D2;
+  --color-terracotta: #D77A52;
+  --color-terracotta-dark: #B85F3D;
+  --color-sage: #8FB39D;
+  --color-sage-dark: #5E8771;
+  --color-deep-blue: #2D4A6B;
+  --color-ink: #2A2522;
+  --color-ink-soft: #5C544E;
+
+  /* Accent pops */
+  --color-mustard: #E8B547;
+  --color-coral: #F08572;
+  --color-teal: #4DA89E;
+
+  /* Surfaces */
+  --bg: var(--color-cream);
+  --surface: #FFFDF8;
+  --surface-2: var(--color-cream-2);
+  --border: #E7D8C3;
+
+  /* Type */
+  --font-body: 'Nunito', 'Quicksand', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Quicksand', 'Nunito', system-ui, sans-serif;
+
+  /* Radius / shadow */
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 22px;
+  --shadow-sm: 0 1px 2px rgba(42, 37, 34, 0.06), 0 2px 6px rgba(42, 37, 34, 0.05);
+  --shadow: 0 4px 12px rgba(42, 37, 34, 0.08), 0 8px 24px rgba(42, 37, 34, 0.06);
+
+  /* Tier-driven sizing (overridden on tier-* root classes — see App.tsx) */
+  --touch-min: 44px;
+  --text-base: 17px;
+  --text-display: 32px;
+}
+
+/* Tier 1 = bigger targets and text */
+.tier-1 {
+  --touch-min: 56px;
+  --text-base: 19px;
+  --text-display: 36px;
+}
+.tier-2 {
+  --touch-min: 44px;
+  --text-base: 17px;
+  --text-display: 32px;
+}
+.tier-3 {
+  --touch-min: 40px;
+  --text-base: 16px;
+  --text-display: 28px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+input, select, textarea {
+  font: inherit;
+}
+
+/* Respect users who ask for reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---- Per-profile accessibility themes (see SettingsModal) ---- */
+.app-theme { min-height: 100vh; display: flex; flex-direction: column; }
+.app-theme > * { flex: 1; display: flex; flex-direction: column; }
+
+.theme-contrast {
+  --color-ink: #000000;
+  --color-ink-soft: #2A2522;
+  --border: #8A7558;
+  --bg: #FFFFFF;
+  --surface: #FFFFFF;
+  --surface-2: #F5EBD8;
+}
+.theme-contrast .muted { color: #2A2522; }
+
+.font-dyslexic {
+  --font-body: 'Comic Sans MS', 'Comic Sans', Verdana, system-ui, sans-serif;
+  --font-display: 'Comic Sans MS', 'Comic Sans', Verdana, system-ui, sans-serif;
+  letter-spacing: 0.02em;
+  word-spacing: 0.08em;
+}
+
+.reduce-motion *, .reduce-motion *::before, .reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}

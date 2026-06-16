@@ -1,0 +1,28 @@
+# Build output
+dist
+dist-ssr
+*.local
+
+# Dependencies
+node_modules
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Editor / OS / local tooling
+.vscode/*
+!.vscode/extensions.json
+.idea
+.claude
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# TypeScript build cache
+*.tsbuildinfo
