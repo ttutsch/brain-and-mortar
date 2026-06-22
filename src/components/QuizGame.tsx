@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { QuizRoundParams } from '../data/missions';
 
 interface Props {
@@ -18,11 +18,18 @@ export function QuizGame({ params, onSolved }: Props) {
   const [chosenIndex, setChosenIndex] = useState<number | null>(null);
   const [wrongAttempts, setWrongAttempts] = useState(0);
   const [retryNonce, setRetryNonce] = useState(0);
+  const actionRef = useRef<HTMLButtonElement>(null);
 
   const total = params.questions.length;
   const question = params.questions[questionIndex];
   const answered = chosenIndex !== null;
   const correct = answered && chosenIndex === question.correctIndex;
+
+  // Choosing an option disables it, which drops focus to <body>; move focus to
+  // the continue button so a keyboard player keeps their place. (Finding #13.)
+  useEffect(() => {
+    if (answered) actionRef.current?.focus();
+  }, [answered]);
 
   function choose(idx: number) {
     if (answered) return;
@@ -105,6 +112,7 @@ export function QuizGame({ params, onSolved }: Props) {
         <div className="row between" style={{ marginTop: 16 }}>
           <span />
           <button
+            ref={actionRef}
             type="button"
             className="btn btn-primary"
             onClick={next}

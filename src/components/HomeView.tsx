@@ -17,6 +17,7 @@ import { HelpModal } from './HelpModal';
 import { Shop } from './Shop';
 import { SettingsModal } from './SettingsModal';
 import { MemoryBook } from './MemoryBook';
+import { Modal } from './Modal';
 
 interface Props {
   profile: PlayerProfile;
@@ -52,7 +53,10 @@ export function HomeView({
   // banner tracks just that chapter's act.
   const chapterStatuses = CHAPTER_REPAIRS.map((r) => getChapterStatus(r.chapterId, progress));
   const currentChapter = chapterStatuses.find((s) => s.done < s.total) ?? null;
-  const currentActId = (currentChapter ?? chapterStatuses[chapterStatuses.length - 1]).chapterId.split('.')[0];
+  // Guard the fallback: with no authored chapters at all, chapterStatuses is empty
+  // and the [length - 1] index is undefined — don't read .chapterId off it.
+  const fallbackChapter = chapterStatuses[chapterStatuses.length - 1] ?? null;
+  const currentActId = (currentChapter ?? fallbackChapter)?.chapterId.split('.')[0] ?? '';
   const actStatuses = chapterStatuses.filter((s) => s.chapterId.startsWith(`${currentActId}.`));
   const actDone = actStatuses.reduce((n, s) => n + s.done, 0);
   const actTotal = actStatuses.reduce((n, s) => n + s.total, 0);
@@ -246,17 +250,8 @@ function FocusPanel({ characterId, mission, tier, onClose, onStartMission }: Foc
   const introLine = mission?.tiers[tier as 1 | 2 | 3]?.wrapper[0]?.text;
 
   return (
-    <div
-      role="dialog"
-      aria-label={`About ${c.displayName}`}
-      style={{
-        position: 'fixed', inset: 0, background: 'rgba(42, 37, 34, 0.45)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, zIndex: 100,
-      }}
-      onClick={onClose}
-    >
-      <div className="card" onClick={(e) => e.stopPropagation()}>
-        <div className="row gap-lg" style={{ marginBottom: 16 }}>
+    <Modal label={`About ${c.displayName}`} onClose={onClose} cardClassName="card" zIndex={100}>
+      <div className="row gap-lg" style={{ marginBottom: 16 }}>
           <CharacterPortrait characterId={characterId} size="lg" />
           <div>
             <h2 className="card-title" style={{ fontSize: '24px' }}>{c.displayName}</h2>
@@ -291,7 +286,6 @@ function FocusPanel({ characterId, mission, tier, onClose, onStartMission }: Foc
             </div>
           </>
         )}
-      </div>
-    </div>
+    </Modal>
   );
 }

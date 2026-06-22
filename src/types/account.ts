@@ -4,6 +4,14 @@ export type Tier = 1 | 2 | 3;
 
 export type AvatarId = string;
 
+/**
+ * Local family account. SECURITY NOTE (adversarial-review #11): the Parent Zone
+ * is a best-effort gate for kids, NOT a security boundary — anyone with devtools
+ * can read this blob, and the unlock only flips client state. `parentEmail` is
+ * stored in plaintext, which is acceptable for v1 (local-only, single device);
+ * before any cloud sync (DESIGN.md §16), do not persist PII unencrypted and treat
+ * the password as a real credential.
+ */
 export interface FamilyAccount {
   id: string;
   parentEmail: string;
@@ -93,11 +101,16 @@ export function defaultProgress(profileId: string): PlayerProgress {
  */
 export function migrateProgress(loaded: PlayerProgress | null, profileId: string): PlayerProgress {
   const base = defaultProgress(profileId);
-  if (!loaded) return base;
+  if (!loaded || typeof loaded !== 'object') return base;
   const merged = { ...base, ...loaded };
+  const num = (v: unknown, fallback: number) =>
+    typeof v === 'number' && Number.isFinite(v) ? v : fallback;
   return {
     ...merged,
     profileId, // never trust a stale id baked into the stored blob
+    coins: num(merged.coins, 0), // a non-number coins would make `coins + earned` concatenate
+    currentAct: num(merged.currentAct, 1),
+    currentChapter: num(merged.currentChapter, 1),
     completedMissionIds: Array.isArray(merged.completedMissionIds) ? merged.completedMissionIds : [],
     completedHouseItemIds: Array.isArray(merged.completedHouseItemIds) ? merged.completedHouseItemIds : [],
     completedTripIds: Array.isArray(merged.completedTripIds) ? merged.completedTripIds : [],
@@ -112,9 +125,13 @@ export function migrateProgress(loaded: PlayerProgress | null, profileId: string
  * (effectiveTier expects a Tier or null, never undefined).
  */
 export function migrateProfile(loaded: PlayerProfile): PlayerProfile {
+  // Only 1/2/3 are valid tiers; anything else (undefined, null, a future Tier 4,
+  // or junk from hand-edited storage) falls back to age-based tiering so we never
+  // index mission.tiers[invalid] and crash.
+  const t = loaded.tierOverride;
   return {
     ...loaded,
-    tierOverride: loaded.tierOverride ?? null,
+    tierOverride: t === 1 || t === 2 || t === 3 ? t : null,
     settings: { ...defaultSettings(), ...(loaded.settings ?? {}) },
   };
 }

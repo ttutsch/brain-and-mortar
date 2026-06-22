@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { HouseSvg } from './HouseSvg';
+import { Modal } from './Modal';
 
 /**
  * Central "current state of the house" panel. The scene itself lives in
@@ -189,18 +190,8 @@ export function HouseStatus({
 
 function HotspotDetail({ item, onClose }: { item: HouseItem; onClose: () => void }) {
   return (
-    <div
-      role="dialog"
-      aria-label={`${item.label} details`}
-      style={{
-        position: 'fixed', inset: 0, background: 'rgba(42, 37, 34, 0.45)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        padding: 16, zIndex: 150,
-      }}
-      onClick={onClose}
-    >
-      <div className="card" onClick={(e) => e.stopPropagation()}>
-        <span className={`tag tag-${item.kind}`} style={{ display: 'inline-block', marginBottom: 12 }}>
+    <Modal label={`${item.label} details`} onClose={onClose} cardClassName="card">
+      <span className={`tag tag-${item.kind}`} style={{ display: 'inline-block', marginBottom: 12 }}>
           {item.kind === 'repair' ? 'Needs repair' : 'Future upgrade'} · {item.chapter}
         </span>
         <h2 className="card-title" style={{ fontSize: 26 }}>{item.label}</h2>
@@ -209,7 +200,6 @@ function HotspotDetail({ item, onClose }: { item: HouseItem; onClose: () => void
           <span />
           <button type="button" className="btn btn-primary" onClick={onClose}>Got it</button>
         </div>
-      </div>
-    </div>
+    </Modal>
   );
 }

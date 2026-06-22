@@ -1,6 +1,7 @@
-import { useState, type FormEvent } from 'react';
+import { useRef, useState, type FormEvent } from 'react';
 import type { FamilyAccount } from '../types';
 import { verifyPassword } from '../lib/crypto';
+import { Modal } from './Modal';
 
 interface Props {
   account: FamilyAccount;
@@ -12,6 +13,7 @@ export function ParentZoneEntry({ account, onUnlock, onCancel }: Props) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   async function submit(e: FormEvent) {
     e.preventDefault();
@@ -31,16 +33,15 @@ export function ParentZoneEntry({ account, onUnlock, onCancel }: Props) {
   }
 
   return (
-    <div
-      role="dialog"
-      aria-label="Parent Zone"
-      style={{
-        position: 'fixed', inset: 0, background: 'rgba(42, 37, 34, 0.55)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, zIndex: 200,
-      }}
+    <Modal
+      label="Parent Zone"
+      onClose={onCancel}
+      cardClassName="card"
+      zIndex={200}
+      dismissOnBackdrop={false}
+      initialFocusRef={inputRef}
     >
-      <div className="card">
-        <h2 className="card-title" style={{ fontSize: 26 }}>Parent Zone</h2>
+      <h2 className="card-title" style={{ fontSize: 26 }}>Parent Zone</h2>
         <p className="card-subtitle">
           This area is locked. Enter the parent password to continue.
         </p>
@@ -53,7 +54,7 @@ export function ParentZoneEntry({ account, onUnlock, onCancel }: Props) {
               autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              autoFocus
+              ref={inputRef}
               required
             />
           </div>
@@ -67,7 +68,6 @@ export function ParentZoneEntry({ account, onUnlock, onCancel }: Props) {
             </button>
           </div>
         </form>
-      </div>
-    </div>
+    </Modal>
   );
 }

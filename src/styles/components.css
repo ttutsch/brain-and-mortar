@@ -1097,6 +1097,13 @@
 .pp-node-reachable {
   animation: pp-pulse 1.6s ease-in-out infinite;
 }
+/* Keyboard focus ring for the (now focusable) map stops. */
+.pp-node { outline: none; }
+.pp-node:focus-visible {
+  outline: 3px solid #2A2522;
+  outline-offset: 3px;
+  border-radius: 6px;
+}
 @keyframes pp-pulse {
   0%, 100% { stroke-width: 3; }
   50% { stroke-width: 5.5; }

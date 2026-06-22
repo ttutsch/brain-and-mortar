@@ -43,8 +43,14 @@ export class LocalStorageAdapter implements StorageAdapter {
   }
 
   async listProfiles(): Promise<PlayerProfile[]> {
-    const raw = readJson<PlayerProfile[]>(KEYS.profiles) ?? [];
-    return raw.map(migrateProfile);
+    // Defend the shape: a corrupt/legacy blob could parse to a non-array, or an
+    // array with null/garbage entries. Either would crash boot (.map / reading
+    // .tierOverride of null) and brick the whole family with no in-app recovery.
+    const raw = readJson<PlayerProfile[]>(KEYS.profiles);
+    const list = Array.isArray(raw) ? raw : [];
+    return list
+      .filter((p): p is PlayerProfile => !!p && typeof p === 'object')
+      .map(migrateProfile);
   }
 
   async getProfile(id: string): Promise<PlayerProfile | null> {

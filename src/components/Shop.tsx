@@ -1,5 +1,6 @@
 import { COSMETICS } from '../data/cosmetics';
 import type { Cosmetic } from '../data/cosmetics';
+import { Modal } from './Modal';
 
 interface Props {
   coins: number;
@@ -15,17 +16,8 @@ interface Props {
  */
 export function Shop({ coins, ownedCosmeticIds, onBuy, onClose }: Props) {
   return (
-    <div
-      role="dialog"
-      aria-label="Cosmetics shop"
-      style={{
-        position: 'fixed', inset: 0, background: 'rgba(42, 37, 34, 0.5)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, zIndex: 150,
-      }}
-      onClick={onClose}
-    >
-      <div className="card card-wide shop-card" onClick={(e) => e.stopPropagation()}>
-        <div className="row between" style={{ marginBottom: 6 }}>
+    <Modal label="Cosmetics shop" onClose={onClose} cardClassName="card card-wide shop-card">
+      <div className="row between" style={{ marginBottom: 6 }}>
           <h2 className="card-title" style={{ margin: 0 }}>The Backyard Shop</h2>
           <div className="row" style={{ gap: 10 }}>
             <span className="coin-pill" aria-label={`${coins} coins`}>
@@ -71,7 +63,6 @@ export function Shop({ coins, ownedCosmeticIds, onBuy, onClose }: Props) {
         <p className="muted" style={{ fontSize: '0.85em', marginTop: 16, marginBottom: 0 }}>
           Need more coins? Every mission earns 10, and finishing a trip earns a bonus.
         </p>
-      </div>
-    </div>
+    </Modal>
   );
 }

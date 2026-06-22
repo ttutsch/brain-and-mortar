@@ -151,10 +151,24 @@ export function PathPlanner({ params, onSolved }: Props) {
           return (
             <g
               key={n.id}
+              className="pp-node"
               onClick={() => tapNode(n.id)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  tapNode(n.id);
+                }
+              }}
+              tabIndex={0}
               style={{ cursor: reachable ? 'pointer' : 'default' }}
               role="button"
-              aria-label={`${n.label}${reachable ? ' — tap to travel here' : ''}`}
+              aria-label={
+                n.label +
+                (isStart ? ', start' : '') +
+                (isGoal ? ', the star' : '') +
+                (visited && !isStart && !isGoal ? ', on your route' : '') +
+                (reachable ? ' — press Enter to travel here' : '')
+              }
             >
               <circle
                 cx={n.x} cy={n.y} r={isStart || isGoal ? 22 : 18}

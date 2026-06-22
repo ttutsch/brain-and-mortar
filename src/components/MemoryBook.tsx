@@ -1,6 +1,7 @@
 import type { Trip } from '../data/trips';
 import { TRIPS } from '../data/trips';
 import { TripImage } from './TripImage';
+import { Modal } from './Modal';
 
 interface Props {
   completedTripIds: string[];
@@ -20,17 +21,8 @@ export function MemoryBook({ completedTripIds, onRelive, onClose }: Props) {
   const done = new Set(completedTripIds);
 
   return (
-    <div
-      role="dialog"
-      aria-label="Memory book"
-      style={{
-        position: 'fixed', inset: 0, background: 'rgba(42, 37, 34, 0.5)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, zIndex: 150,
-      }}
-      onClick={onClose}
-    >
-      <div className="card card-wide memory-book" onClick={(e) => e.stopPropagation()}>
-        <div className="row between" style={{ marginBottom: 6 }}>
+    <Modal label="Memory book" onClose={onClose} cardClassName="card card-wide memory-book">
+      <div className="row between" style={{ marginBottom: 6 }}>
           <h2 className="card-title" style={{ margin: 0 }}>Memory Book</h2>
           <button type="button" className="btn" onClick={onClose}>Done</button>
         </div>
@@ -71,7 +63,6 @@ export function MemoryBook({ completedTripIds, onRelive, onClose }: Props) {
             );
           })}
         </div>
-      </div>
-    </div>
+    </Modal>
   );
 }

@@ -33,6 +33,8 @@ interface Props {
   onFinish: (outcome: MissionOutcome) => void;
   /** Cancel out of the intro without playing. */
   onCancel: () => void;
+  /** The player's Reduce-motion setting, forwarded to animated mini-games. */
+  reducedMotion?: boolean;
 }
 
 export interface MissionOutcome {
@@ -51,7 +53,7 @@ type Phase =
   | { kind: 'stretch' }
   | { kind: 'complete' };
 
-export function MissionPlayer({ mission, tier, progress, onFinish, onCancel }: Props) {
+export function MissionPlayer({ mission, tier, progress, onFinish, onCancel, reducedMotion }: Props) {
   const variant = mission.tiers[tier];
   const lead = CHARACTERS[mission.lead];
 
@@ -213,6 +215,7 @@ export function MissionPlayer({ mission, tier, progress, onFinish, onCancel }: P
               <CodeRobot
                 key={phase.roundIndex}
                 params={round as CodeRobotRound}
+                reducedMotion={reducedMotion}
                 onSolved={({ wrongAttempts: wa }) => finishRound(phase.roundIndex, wa)}
               />
             ) : (
@@ -265,7 +268,7 @@ export function MissionPlayer({ mission, tier, progress, onFinish, onCancel }: P
             ) : stretchVariant.pattern === 'quiz' ? (
               <QuizGame params={{ questions: (stretchRound as QuizRound).questions }} onSolved={done} />
             ) : stretchVariant.pattern === 'code-robot' ? (
-              <CodeRobot params={stretchRound as CodeRobotRound} onSolved={done} />
+              <CodeRobot params={stretchRound as CodeRobotRound} reducedMotion={reducedMotion} onSolved={done} />
             ) : (
               <PathPlanner params={stretchRound as PathPlannerRound} onSolved={done} />
             )}

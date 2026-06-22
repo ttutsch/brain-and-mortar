@@ -1,4 +1,5 @@
 import type { PlayerSettings } from '../types';
+import { Modal } from './Modal';
 
 interface Props {
   playerName: string;
@@ -18,17 +19,8 @@ export function SettingsModal({ playerName, settings, onChange, onClose }: Props
   }
 
   return (
-    <div
-      role="dialog"
-      aria-label="Settings"
-      style={{
-        position: 'fixed', inset: 0, background: 'rgba(42, 37, 34, 0.5)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, zIndex: 150,
-      }}
-      onClick={onClose}
-    >
-      <div className="card" onClick={(e) => e.stopPropagation()}>
-        <div className="row between" style={{ marginBottom: 6 }}>
+    <Modal label="Settings" onClose={onClose} cardClassName="card">
+      <div className="row between" style={{ marginBottom: 6 }}>
           <h2 className="card-title" style={{ margin: 0, fontSize: 24 }}>Settings</h2>
           <button type="button" className="btn" onClick={onClose}>Done</button>
         </div>
@@ -58,14 +50,16 @@ export function SettingsModal({ playerName, settings, onChange, onClose }: Props
         <p className="muted" style={{ fontSize: '0.85em', marginTop: 16, marginBottom: 0 }}>
           Tip: if your device asks for reduced motion, the game already respects that automatically.
         </p>
-      </div>
-    </div>
+    </Modal>
   );
 }
 
 function SettingToggle({
   label, description, checked, onToggle,
 }: { label: string; description: string; checked: boolean; onToggle: () => void }) {
+  // Concise accessible name (the label) + the sentence linked as a description,
+  // so screen readers don't read the whole paragraph as the control's name.
+  const descId = `setting-desc-${label.replace(/\s+/g, '-').toLowerCase()}`;
   return (
     <button
       type="button"
@@ -73,10 +67,12 @@ function SettingToggle({
       onClick={onToggle}
       role="switch"
       aria-checked={checked}
+      aria-label={label}
+      aria-describedby={descId}
     >
       <span className="setting-info">
         <strong>{label}</strong>
-        <span className="muted setting-desc">{description}</span>
+        <span className="muted setting-desc" id={descId}>{description}</span>
       </span>
       <span className="setting-switch" aria-hidden="true">
         <span className="setting-knob" />

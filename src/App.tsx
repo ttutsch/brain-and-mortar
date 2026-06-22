@@ -228,6 +228,7 @@ export function App() {
           progress={activeProgress}
           onFinish={handleMissionFinish}
           onCancel={() => setActiveMission(null)}
+          reducedMotion={activeProfile.settings.reducedMotion}
         />
       </div>
     );

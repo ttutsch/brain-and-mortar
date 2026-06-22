@@ -80,9 +80,12 @@ export function applyMissionOutcome(
   progress: PlayerProgress,
   outcome: { missionId: string; coinsEarned: number; wrongAttempts?: number; tier?: Tier },
 ): PlayerProgress {
-  const completedMissionIds = progress.completedMissionIds.includes(outcome.missionId)
-    ? progress.completedMissionIds
-    : [...progress.completedMissionIds, outcome.missionId];
+  // Idempotent, like applyTripOutcome / applyPurchase: a mission that's already
+  // complete never re-awards coins or re-records mastery. Guards a double-fire of
+  // handleMissionFinish (e.g. a fast double-tap) or any future replay entry point.
+  if (progress.completedMissionIds.includes(outcome.missionId)) return progress;
+
+  const completedMissionIds = [...progress.completedMissionIds, outcome.missionId];
 
   // Re-evaluate every chapter repair against the new mission list.
   let completedHouseItemIds = progress.completedHouseItemIds;

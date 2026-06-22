@@ -1,5 +1,6 @@
 import type { Tier } from '../types';
 import { tierLabel } from '../lib/tier';
+import { Modal } from './Modal';
 
 interface Props {
   tier: Tier;
@@ -8,17 +9,8 @@ interface Props {
 
 export function HelpModal({ tier, onClose }: Props) {
   return (
-    <div
-      role="dialog"
-      aria-label="How to play"
-      style={{
-        position: 'fixed', inset: 0, background: 'rgba(42, 37, 34, 0.5)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, zIndex: 150,
-      }}
-      onClick={onClose}
-    >
-      <div className="card card-wide help-card" onClick={(e) => e.stopPropagation()}>
-        <div className="row between" style={{ marginBottom: 12 }}>
+    <Modal label="How to play" onClose={onClose} cardClassName="card card-wide help-card">
+      <div className="row between" style={{ marginBottom: 12 }}>
           <h2 className="card-title" style={{ margin: 0 }}>How to play</h2>
           <button type="button" className="btn btn-ghost" onClick={onClose} aria-label="Close help">
             Close
@@ -69,7 +61,6 @@ export function HelpModal({ tier, onClose }: Props) {
             Got it, let’s play
           </button>
         </div>
-      </div>
-    </div>
+    </Modal>
   );
 }
