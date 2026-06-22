@@ -3,6 +3,7 @@ import type {
   PlayerProfile,
   PlayerProgress,
 } from '../types';
+import { migrateProfile } from '../types';
 import type { StorageAdapter } from './StorageAdapter';
 
 const KEYS = {
@@ -22,7 +23,14 @@ function readJson<T>(key: string): T | null {
 }
 
 function writeJson(key: string, value: unknown): void {
-  localStorage.setItem(key, JSON.stringify(value));
+  // Best-effort: a full quota or a storage-disabled context (e.g. some private
+  // modes) throws on setItem. Swallow it with a warning rather than letting the
+  // rejection strand the player mid-flow — the in-memory state still advances.
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (e) {
+    console.warn(`[storage] write failed for "${key}":`, e);
+  }
 }
 
 export class LocalStorageAdapter implements StorageAdapter {
@@ -35,7 +43,8 @@ export class LocalStorageAdapter implements StorageAdapter {
   }
 
   async listProfiles(): Promise<PlayerProfile[]> {
-    return readJson<PlayerProfile[]>(KEYS.profiles) ?? [];
+    const raw = readJson<PlayerProfile[]>(KEYS.profiles) ?? [];
+    return raw.map(migrateProfile);
   }
 
   async getProfile(id: string): Promise<PlayerProfile | null> {

@@ -13,7 +13,7 @@ import type {
   QuizRound,
 } from '../data/missions';
 import { COINS_PER_MISSION } from '../data/missions';
-import { applyMissionOutcome, getChapterStatus, isStretchEligible } from '../lib/missionFlow';
+import { applyMissionOutcome, getChapterStatus } from '../lib/missionFlow';
 import { CharacterPortrait } from './CharacterPortrait';
 import { MissionScene } from './MissionScene';
 import { DragMatch } from './DragMatch';
@@ -279,7 +279,12 @@ export function MissionPlayer({ mission, tier, progress, onFinish, onCancel }: P
   // Projected progress *after* this mission's outcome is saved, so we can show
   // accurate "X of Y missions in this chapter done" + flag chapter completion.
   const coinsEarned = COINS_PER_MISSION + (stretchDone ? STRETCH_BONUS_COINS : 0);
-  const stretchAvailable = !stretchDone && isStretchEligible(progress, mission, tier);
+  // Confidence-based escalation (DESIGN.md §12): a clean run (no wrong attempts)
+  // on a below-top-tier mission signals the player found it easy, so offer the
+  // optional harder round from the next tier up. Based on THIS session's
+  // performance so it reliably fires (historical skill mastery never could —
+  // a mission is played once and its skill tags are unique to it).
+  const stretchAvailable = !stretchDone && tier < 3 && wrongAttempts === 0;
   const projected = progress
     ? applyMissionOutcome(progress, { missionId: mission.id, coinsEarned })
     : null;

@@ -127,26 +127,6 @@ export function applyMissionOutcome(
   };
 }
 
-/**
- * Confidence-based escalation check (DESIGN.md §12): true when the player has
- * solid history on this mission's skills (≥ 80% success over ≥ 10 attempts on
- * average) — used to offer an optional stretch round from the next tier up.
- */
-export function isStretchEligible(
-  progress: PlayerProgress | null,
-  mission: Mission,
-  tier: Tier,
-): boolean {
-  if (!progress || tier >= 3) return false;
-  const records = mission.skillTags
-    .map((t) => progress.skillMastery[t])
-    .filter((r): r is SkillMasteryRecord => !!r);
-  if (records.length === 0) return false;
-  const attempts = records.reduce((n, r) => n + r.attempts, 0);
-  const successes = records.reduce((n, r) => n + r.successes, 0);
-  return attempts >= 10 && successes / attempts >= 0.8;
-}
-
 /* ---------- Trips ---------- */
 
 /** True when every chapter repair in the given act is unlocked. */

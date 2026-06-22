@@ -87,10 +87,34 @@ export function defaultProgress(profileId: string): PlayerProgress {
 /**
  * Fill in any fields missing on a loaded PlayerProgress. Necessary because
  * profiles saved before a new field existed will lack it in storage; merging
- * with `defaultProgress` lets us evolve the shape without losing data.
+ * with `defaultProgress` lets us evolve the shape without losing data. Also
+ * coerces the collection fields so a corrupt/null value in storage can't crash
+ * later `.includes` / iteration.
  */
 export function migrateProgress(loaded: PlayerProgress | null, profileId: string): PlayerProgress {
   const base = defaultProgress(profileId);
   if (!loaded) return base;
-  return { ...base, ...loaded };
+  const merged = { ...base, ...loaded };
+  return {
+    ...merged,
+    profileId, // never trust a stale id baked into the stored blob
+    completedMissionIds: Array.isArray(merged.completedMissionIds) ? merged.completedMissionIds : [],
+    completedHouseItemIds: Array.isArray(merged.completedHouseItemIds) ? merged.completedHouseItemIds : [],
+    completedTripIds: Array.isArray(merged.completedTripIds) ? merged.completedTripIds : [],
+    ownedCosmeticIds: Array.isArray(merged.ownedCosmeticIds) ? merged.ownedCosmeticIds : [],
+    skillMastery: merged.skillMastery && typeof merged.skillMastery === 'object' ? merged.skillMastery : {},
+  };
+}
+
+/**
+ * Backfill a loaded PlayerProfile so profiles saved by an older build gain any
+ * fields added since — notably new settings flags and a valid `tierOverride`
+ * (effectiveTier expects a Tier or null, never undefined).
+ */
+export function migrateProfile(loaded: PlayerProfile): PlayerProfile {
+  return {
+    ...loaded,
+    tierOverride: loaded.tierOverride ?? null,
+    settings: { ...defaultSettings(), ...(loaded.settings ?? {}) },
+  };
 }

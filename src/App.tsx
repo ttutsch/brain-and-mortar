@@ -75,7 +75,11 @@ export function App() {
       if (!cancelled) setActiveProgress(migrated);
     })();
     return () => { cancelled = true; };
-  }, [activeProfile]);
+    // Keyed on the profile *identity*: reload progress when the active profile
+    // changes, but not when only its settings object is replaced (see
+    // handleUpdateSettings) — storage already holds the latest progress.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeProfile?.id]);
 
   async function handleMissionFinish(outcome: MissionOutcome) {
     if (!activeProgress) {
@@ -112,6 +116,10 @@ export function App() {
     const current = profiles.find((p) => p.id === activeProfile.id) ?? activeProfile;
     const updated = { ...current, settings: next };
     await getStorage().saveProfile(updated);
+    // Keep the active profile in sync so the theme classes used by the mission
+    // and trip screens (activeThemeClasses, below) reflect the new settings —
+    // e.g. reduced-motion / high-contrast must reach the mini-games, not just home.
+    setActiveProfile(updated);
     await refreshProfiles();
   }
 
