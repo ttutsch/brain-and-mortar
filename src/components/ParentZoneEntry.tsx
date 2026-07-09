@@ -22,8 +22,8 @@ export function ParentZoneEntry({ account, onUnlock, onCancel }: Props) {
     try {
       const ok = await verifyPassword(
         password,
-        account.parentPasswordSalt,
-        account.parentPasswordHash,
+        account.parentPasswordSalt ?? '',
+        account.parentPasswordHash ?? '',
       );
       if (ok) onUnlock();
       else setError('That password didn’t match. Please try again.');

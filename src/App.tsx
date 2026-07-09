@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import './styles/components.css';
 import type { FamilyAccount, Mission, PlayerProfile, PlayerProgress, PlayerSettings } from './types';
-import { migrateProgress } from './types';
+import { migrateProgress, unclaimedFamily, isFamilyClaimed } from './types';
 import { getStorage } from './storage';
+import { generateId } from './lib/crypto';
 import { effectiveTier } from './lib/tier';
 import { applyMissionOutcome, applyPurchase, applyTripOutcome } from './lib/missionFlow';
 import type { Cosmetic } from './data/cosmetics';
-import { FamilyAccountCreate } from './components/FamilyAccountCreate';
+import { ParentSetup } from './components/ParentSetup';
 import { ProfileCreate } from './components/ProfileCreate';
 import { ProfilePicker } from './components/ProfilePicker';
 import { HomeView } from './components/HomeView';
@@ -23,7 +24,8 @@ type Subview =
   | 'picker'
   | 'create-profile'
   | 'parent-zone-entry'
-  | 'parent-zone';
+  | 'parent-zone'
+  | 'setup-parent';
 
 export function App() {
   const [bootLoading, setBootLoading] = useState(true);
@@ -47,7 +49,13 @@ export function App() {
     let cancelled = false;
     (async () => {
       const storage = getStorage();
-      const acc = await storage.getFamilyAccount();
+      // Kid-first: if there's no family yet, create an unclaimed one so the first
+      // player can be made and start playing immediately — no grown-up required.
+      let acc = await storage.getFamilyAccount();
+      if (!acc) {
+        acc = unclaimedFamily(generateId('fam'), new Date().toISOString());
+        await storage.saveFamilyAccount(acc);
+      }
       const profs = await storage.listProfiles();
       if (cancelled) return;
       setAccount(acc);
@@ -131,22 +139,12 @@ export function App() {
     await getStorage().saveProgress(next);
   }
 
-  if (bootLoading) {
+  // account is auto-created at boot, so this also covers the brief pre-boot gap.
+  if (bootLoading || !account) {
     return (
       <div className="centered-screen">
         <p className="muted">Loading…</p>
       </div>
-    );
-  }
-
-  if (!account) {
-    return (
-      <FamilyAccountCreate
-        onCreated={(acc) => {
-          setAccount(acc);
-          setSubview('create-profile');
-        }}
-      />
     );
   }
 
@@ -181,6 +179,19 @@ export function App() {
     );
   }
 
+  if (subview === 'setup-parent') {
+    return (
+      <ParentSetup
+        account={account}
+        onDone={(claimed) => {
+          setAccount(claimed);
+          setSubview('parent-zone');
+        }}
+        onCancel={() => setSubview('parent-zone')}
+      />
+    );
+  }
+
   if (subview === 'parent-zone') {
     return (
       <ParentZone
@@ -188,6 +199,7 @@ export function App() {
         profiles={profiles}
         onClose={() => setSubview('picker')}
         onProfilesChanged={refreshProfiles}
+        onSetUpParent={() => setSubview('setup-parent')}
         onPreviewTrip={(trip) => {
           setActiveTrip({ trip, replay: true });
           setSubview('home');
@@ -250,7 +262,9 @@ export function App() {
             setActiveProfile(null);
             setSubview('picker');
           }}
-          onOpenParentZone={() => setSubview('parent-zone-entry')}
+          onOpenParentZone={() =>
+            setSubview(isFamilyClaimed(account) ? 'parent-zone-entry' : 'parent-zone')
+          }
           onStartMission={(m) => setActiveMission(m)}
           onStartTrip={(t) => setActiveTrip({ trip: t, replay: false })}
           onReliveTrip={(t) => setActiveTrip({ trip: t, replay: true })}

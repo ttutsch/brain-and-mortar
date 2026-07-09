@@ -10,12 +10,14 @@ interface Props {
   profiles: PlayerProfile[];
   onClose: () => void;
   onProfilesChanged: () => void;
+  /** Attach a grown-up (email + Parent Zone password) to the family. */
+  onSetUpParent: () => void;
   /** Preview a trip without earning its rewards — for demo purposes. */
   onPreviewTrip: (trip: Trip) => void;
 }
 
 export function ParentZone({
-  account: _account, profiles, onClose, onProfilesChanged, onPreviewTrip,
+  account, profiles, onClose, onProfilesChanged, onPreviewTrip, onSetUpParent,
 }: Props) {
   async function setOverride(profile: PlayerProfile, tier: Tier | null) {
     const updated = { ...profile, tierOverride: tier };
@@ -83,6 +85,27 @@ export function ParentZone({
                 </div>
               );
             })}
+          </div>
+        )}
+
+        <h2 className="card-title" style={{ fontSize: 18, marginTop: 26, marginBottom: 8 }}>
+          Grown-up account
+        </h2>
+        {account.parentEmail ? (
+          <p className="muted" style={{ marginTop: 0 }}>
+            Linked to <strong>{account.parentEmail}</strong>. The Parent Zone is locked with a password.
+          </p>
+        ) : (
+          <div className="row between" style={{ padding: 12, border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
+            <div>
+              <strong>No grown-up linked yet</strong>
+              <div className="muted" style={{ fontSize: '0.9em' }}>
+                Add a grown-up to lock this area with a password. Optional — kids can keep playing without it.
+              </div>
+            </div>
+            <button type="button" className="btn btn-primary" onClick={onSetUpParent} style={{ flexShrink: 0 }}>
+              Set up a grown-up
+            </button>
           </div>
         )}
 

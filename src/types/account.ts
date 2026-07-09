@@ -5,20 +5,35 @@ export type Tier = 1 | 2 | 3;
 export type AvatarId = string;
 
 /**
- * Local family account. SECURITY NOTE (adversarial-review #11): the Parent Zone
- * is a best-effort gate for kids, NOT a security boundary — anyone with devtools
- * can read this blob, and the unlock only flips client state. `parentEmail` is
- * stored in plaintext, which is acceptable for v1 (local-only, single device);
- * before any cloud sync (DESIGN.md §16), do not persist PII unencrypted and treat
- * the password as a real credential.
+ * Local family container. Kid-first onboarding: a family is created the moment
+ * the first player is made, WITHOUT a grown-up — so nobody is blocked behind a
+ * parent login. The grown-up credentials below are optional and get filled in
+ * later ("claiming" the family) to lock the Parent Zone.
+ *
+ * SECURITY NOTE (adversarial-review #11): the Parent Zone is a best-effort gate
+ * for kids, NOT a security boundary — anyone with devtools can read this blob,
+ * and the unlock only flips client state. `parentEmail` is stored in plaintext,
+ * acceptable for local single-device use; before cloud sync (DESIGN.md §16), do
+ * not persist PII unencrypted and treat the password as a real credential.
  */
 export interface FamilyAccount {
   id: string;
-  parentEmail: string;
-  parentPasswordHash: string;
-  parentPasswordSalt: string;
+  /** Set once a grown-up is linked; absent on a fresh kid-first family. */
+  parentEmail?: string;
+  parentPasswordHash?: string;
+  parentPasswordSalt?: string;
   createdAt: string; // ISO datetime
   schemaVersion: number;
+}
+
+/** A brand-new local family with no grown-up linked yet (kid-first onboarding). */
+export function unclaimedFamily(id: string, createdAt: string): FamilyAccount {
+  return { id, createdAt, schemaVersion: SCHEMA_VERSION };
+}
+
+/** True once a grown-up has set a Parent Zone password on the family. */
+export function isFamilyClaimed(account: FamilyAccount | null): boolean {
+  return !!account?.parentPasswordHash;
 }
 
 export interface PlayerProfile {

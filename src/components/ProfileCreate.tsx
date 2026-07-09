@@ -87,9 +87,12 @@ export function ProfileCreate({ familyId, isFirst, onCreated, onCancel }: Props)
   return (
     <div className="centered-screen">
       <div className="card">
-        <h1 className="card-title">{isFirst ? 'Add your first player' : 'Add a player'}</h1>
+        {isFirst && <span className="badge">Brain &amp; Mortar</span>}
+        <h1 className="card-title">{isFirst ? 'Welcome! Create your player' : 'Add a player'}</h1>
         <p className="card-subtitle">
-          One profile per kid. Their age picks the right tier of content; you can adjust later in the Parent Zone.
+          {isFirst
+            ? 'Pick a name, an avatar, and your age — then start playing right away. No grown-up needed; one can add a Parent Zone later.'
+            : 'One profile per kid. Their age picks the right tier of content; you can adjust later in the Parent Zone.'}
         </p>
 
         <form onSubmit={submit} noValidate>
