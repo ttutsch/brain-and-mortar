@@ -3,6 +3,9 @@ dist
 dist-ssr
 *.local
 
+# Local env (Supabase keys, etc.) — .env.example stays committed
+.env
+
 # Dependencies
 node_modules
 

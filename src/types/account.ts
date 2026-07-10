@@ -24,6 +24,12 @@ export interface FamilyAccount {
   parentPasswordSalt?: string;
   createdAt: string; // ISO datetime
   schemaVersion: number;
+  /** Cloud sync (Phase 2): set once this device is linked to a Supabase family. */
+  cloudFamilyId?: string;
+  /** The family's short join code (shown to the owner so kids can join). */
+  joinCode?: string;
+  /** Whether this device is the family owner (grown-up) or a joined member (kid). */
+  cloudRole?: 'owner' | 'member';
 }
 
 /** A brand-new local family with no grown-up linked yet (kid-first onboarding). */

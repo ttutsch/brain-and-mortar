@@ -4,6 +4,12 @@ import type { FamilyAccount, Mission, PlayerProfile, PlayerProgress, PlayerSetti
 import { migrateProgress, unclaimedFamily, isFamilyClaimed } from './types';
 import { getStorage } from './storage';
 import { generateId } from './lib/crypto';
+import { isCloudConfigured } from './lib/supabase';
+import {
+  signUpOwner, createFamily, ensureAnonSession, joinFamily,
+  pushProfile, pushProgress, pullFamily, signOutCloud,
+  type CloudSnapshot,
+} from './lib/cloud';
 import { effectiveTier } from './lib/tier';
 import { applyMissionOutcome, applyPurchase, applyTripOutcome } from './lib/missionFlow';
 import type { Cosmetic } from './data/cosmetics';
@@ -89,6 +95,96 @@ export function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeProfile?.id]);
 
+  // ---- Cloud sync (Phase 2, opt-in) ----------------------------------------
+  // Cloud is source of truth on pull; every local save pushes. Simple
+  // last-write-wins — fine for a family game; real conflict handling is future.
+  async function mergeSnapshot(snap: CloudSnapshot) {
+    const storage = getStorage();
+    for (const p of snap.profiles) await storage.saveProfile(p);
+    for (const pid of Object.keys(snap.progressByProfileId)) {
+      await storage.saveProgress(snap.progressByProfileId[pid]);
+    }
+  }
+
+  /** Push every local profile + its progress into the given cloud family. */
+  async function pushAllLocal(familyId: string) {
+    const storage = getStorage();
+    const local = await storage.listProfiles();
+    for (const p of local) {
+      await pushProfile(familyId, p, await storage.getProgress(p.id));
+    }
+  }
+
+  // Pull the family down whenever this device is linked (boot + right after linking).
+  useEffect(() => {
+    if (!isCloudConfigured() || !account?.cloudFamilyId) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const snap = await pullFamily();
+        if (cancelled) return;
+        await mergeSnapshot(snap);
+        await refreshProfiles();
+      } catch (e) {
+        console.warn('[cloud] pull failed', e);
+      }
+    })();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account?.cloudFamilyId]);
+
+  async function handleCreateCloudAccount(email: string, password: string) {
+    if (!account) throw new Error('No family yet');
+    await signUpOwner(email, password);
+    const fam = await createFamily();
+    const updated: FamilyAccount = {
+      ...account,
+      parentEmail: email.trim().toLowerCase(),
+      cloudFamilyId: fam.id,
+      joinCode: fam.joinCode,
+      cloudRole: 'owner',
+    };
+    await getStorage().saveFamilyAccount(updated);
+    setAccount(updated);
+    await pushAllLocal(fam.id); // upload the players already on this device
+    return fam;
+  }
+
+  async function handleJoinFamily(code: string) {
+    if (!account) throw new Error('No family yet');
+    await ensureAnonSession();
+    const familyId = await joinFamily(code);
+    const updated: FamilyAccount = {
+      ...account,
+      cloudFamilyId: familyId,
+      joinCode: code.trim().toUpperCase(),
+      cloudRole: 'member',
+    };
+    await getStorage().saveFamilyAccount(updated);
+    await pushAllLocal(familyId);        // contribute this device's players…
+    await mergeSnapshot(await pullFamily()); // …then pull the whole family down
+    await refreshProfiles();
+    setAccount(updated); // set last so the pull effect doesn't double-run mid-join
+  }
+
+  async function handleCloudSyncNow() {
+    if (!account?.cloudFamilyId) return;
+    await pushAllLocal(account.cloudFamilyId);
+    await mergeSnapshot(await pullFamily());
+    await refreshProfiles();
+  }
+
+  async function handleCloudSignOut() {
+    if (!account) return;
+    try { await signOutCloud(); } catch (e) { console.warn('[cloud] sign-out', e); }
+    const updated: FamilyAccount = { ...account };
+    delete updated.cloudFamilyId;
+    delete updated.joinCode;
+    delete updated.cloudRole;
+    await getStorage().saveFamilyAccount(updated);
+    setAccount(updated);
+  }
+
   async function handleMissionFinish(outcome: MissionOutcome) {
     if (!activeProgress) {
       setActiveMission(null);
@@ -101,6 +197,9 @@ export function App() {
     if (newItem) setCelebrateItemId(newItem);
     setActiveProgress(next);
     await getStorage().saveProgress(next);
+    if (account?.cloudFamilyId) {
+      pushProgress(account.cloudFamilyId, next).catch((e) => console.warn('[cloud] push', e));
+    }
     setActiveMission(null);
   }
 
@@ -116,6 +215,9 @@ export function App() {
     if (firstOttawa) setCelebrateItemId('coda.trampoline');
     setActiveProgress(next);
     await getStorage().saveProgress(next);
+    if (account?.cloudFamilyId) {
+      pushProgress(account.cloudFamilyId, next).catch((e) => console.warn('[cloud] push', e));
+    }
     setActiveTrip(null);
   }
 
@@ -137,6 +239,9 @@ export function App() {
     if (!next) return; // already owned or can't afford — Shop disables these anyway
     setActiveProgress(next);
     await getStorage().saveProgress(next);
+    if (account?.cloudFamilyId) {
+      pushProgress(account.cloudFamilyId, next).catch((e) => console.warn('[cloud] push', e));
+    }
   }
 
   // account is auto-created at boot, so this also covers the brief pre-boot gap.
@@ -157,6 +262,10 @@ export function App() {
         isFirst={isFirstProfile}
         onCreated={async (profile) => {
           await refreshProfiles();
+          if (account.cloudFamilyId) {
+            pushProfile(account.cloudFamilyId, profile, await getStorage().getProgress(profile.id))
+              .catch((e) => console.warn('[cloud] push profile', e));
+          }
           if (isFirstProfile) {
             setActiveProfile(profile);
             setSubview('home');
@@ -200,6 +309,10 @@ export function App() {
         onClose={() => setSubview('picker')}
         onProfilesChanged={refreshProfiles}
         onSetUpParent={() => setSubview('setup-parent')}
+        cloudConfigured={isCloudConfigured()}
+        onCreateCloudAccount={handleCreateCloudAccount}
+        onCloudSyncNow={handleCloudSyncNow}
+        onCloudSignOut={handleCloudSignOut}
         onPreviewTrip={(trip) => {
           setActiveTrip({ trip, replay: true });
           setSubview('home');
@@ -285,6 +398,9 @@ export function App() {
         setSubview('home');
       }}
       onAddProfile={() => setSubview('create-profile')}
+      cloudConfigured={isCloudConfigured()}
+      cloudLinked={!!account.cloudFamilyId}
+      onJoinFamily={handleJoinFamily}
     />
   );
 }
