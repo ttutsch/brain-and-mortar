@@ -27,6 +27,12 @@ jobs:
           node-version: 20
       - run: npm install
       - run: npm run build
+        env:
+          # Public Supabase client credentials — safe to expose (they ship in the
+          # JS bundle anyway). Repo Variables override these defaults if set under
+          # Settings → Secrets and variables → Actions → Variables.
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL || 'https://zilpyoviqdzqkrwbuilk.supabase.co' }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY || 'sb_publishable_iMtaJLcebuf8iibgcF3Hzw_ddZIujtx' }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
