@@ -99,9 +99,18 @@ export function ParentZone({
         <h2 className="card-title" style={{ fontSize: 18, marginTop: 26, marginBottom: 8 }}>
           Grown-up account
         </h2>
-        {account.parentEmail ? (
+        {cloudConfigured ? (
+          // Cloud is the single grown-up credential: it locks the Parent Zone and syncs.
+          <CloudSyncPanel
+            account={account}
+            onCreate={onCreateCloudAccount}
+            onSyncNow={onCloudSyncNow}
+            onSignOut={onCloudSignOut}
+          />
+        ) : account.parentPasswordHash ? (
           <p className="muted" style={{ marginTop: 0 }}>
-            Linked to <strong>{account.parentEmail}</strong>. The Parent Zone is locked with a password.
+            {account.parentEmail ? <>Linked to <strong>{account.parentEmail}</strong>. </> : null}
+            The Parent Zone is locked with a password.
           </p>
         ) : (
           <div className="row between" style={{ padding: 12, border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
@@ -115,20 +124,6 @@ export function ParentZone({
               Set up a grown-up
             </button>
           </div>
-        )}
-
-        {cloudConfigured && (
-          <>
-            <h2 className="card-title" style={{ fontSize: 18, marginTop: 26, marginBottom: 8 }}>
-              Sync across devices
-            </h2>
-            <CloudSyncPanel
-              account={account}
-              onCreate={onCreateCloudAccount}
-              onSyncNow={onCloudSyncNow}
-              onSignOut={onCloudSignOut}
-            />
-          </>
         )}
 
         <h2 className="card-title" style={{ fontSize: 18, marginTop: 26, marginBottom: 8 }}>
