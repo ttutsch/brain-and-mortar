@@ -5,6 +5,7 @@ import type { Mission } from '../types';
 import type {
   CodeRobotMissionParams,
   DragMatchMissionParams,
+  MixedMissionParams,
   QuizMissionParams,
 } from './missions';
 
@@ -22,12 +23,13 @@ export const CH9_M1_GEOMETRY: Mission = {
     1: {
       wrapper: [
         { text: 'Mama T! The basement is dry and clean — now we make it AWESOME. First: shapes and measuring!' },
-        { text: 'Round 1: name the shapes. Round 2: measure the room.' },
+        { text: 'Round 1: name the shapes. Round 2: measure the room. Round 3: count the build pieces!' },
       ],
       pattern: 'quiz',
       params: {
         rounds: [
           {
+            kind: 'quiz',
             heading: 'Round 1 · Shapes in the basement',
             intro: 'Everything we build starts with a shape.',
             questions: [
@@ -39,6 +41,7 @@ export const CH9_M1_GEOMETRY: Mission = {
             ],
           },
           {
+            kind: 'quiz',
             heading: 'Round 2 · Measure it up',
             intro: 'Builders measure twice!',
             questions: [
@@ -49,18 +52,68 @@ export const CH9_M1_GEOMETRY: Mission = {
               { id: 'q5', question: 'Around the whole rug edge is called its…', options: ['Area', 'Perimeter', 'Volume', 'Diameter'], correctIndex: 1, explanation: 'Perimeter is the distance around — like walking the edge.', hint: 'The walk-around-it measurement.' },
             ],
           },
+          {
+            kind: 'counting',
+            heading: 'Round 3 · Count the build pieces',
+            intro: 'The build crates are open! Count the shape pieces so nothing goes missing.',
+            items: [
+              {
+                id: 'c1',
+                prompt: 'How many triangle brackets did Dada T unpack for the shelves?',
+                groups: [{ emoji: '🔺', count: 6 }],
+                answer: 6,
+                options: [4, 5, 6, 7],
+                hint: 'Touch each triangle as you count it.',
+                explanation: 'Six strong triangle brackets — triangles hold shelves up!',
+              },
+              {
+                id: 'c2',
+                prompt: 'Caleb sorted square tiles: 3 in the first box and 4 in the second. How many squares in all?',
+                groups: [
+                  { emoji: '🟦', count: 3, label: 'First box' },
+                  { emoji: '🟦', count: 4, label: 'Second box' },
+                ],
+                answer: 7,
+                options: [5, 6, 7, 8],
+                hint: 'Count the first box, then keep counting into the second.',
+                explanation: '3 + 4 = 7 square tiles!',
+              },
+              {
+                id: 'c3',
+                prompt: 'How many round rug pads did Mama T roll out?',
+                groups: [{ emoji: '🔵', count: 5 }],
+                answer: 5,
+                options: [3, 4, 5, 6],
+                hint: 'Count each circle one at a time.',
+                explanation: 'Five round pads — perfect circles, no corners!',
+              },
+              {
+                id: 'c4',
+                prompt: 'Izzy found 2 diamond stickers and Owen found 6 more. How many diamonds together?',
+                groups: [
+                  { emoji: '🔷', count: 2, label: 'Izzy’s' },
+                  { emoji: '🔷', count: 6, label: 'Owen’s' },
+                ],
+                answer: 8,
+                options: [6, 7, 8, 9],
+                hint: 'Start at the bigger group, 6, then count 2 more.',
+                explanation: '2 + 6 = 8 shiny diamonds for the wall.',
+              },
+            ],
+          },
         ],
-      } satisfies QuizMissionParams,
+      } satisfies MixedMissionParams,
     },
     2: {
       wrapper: [
         { text: 'Mama T. Basement blueprints in hand. Today we calculate like real builders: area, perimeter, and materials.' },
-        { text: 'Round 1: area and perimeter. Round 2: materials math.' },
+        { text: 'Round 1: area and perimeter. Round 2: materials math. Round 3: word problems you work out yourself.' },
       ],
       pattern: 'quiz',
       params: {
         rounds: [
           {
+            kind: 'quiz',
             heading: 'Round 1 · Area & perimeter',
             intro: 'The rec room is 6 m × 4 m.',
             questions: [
@@ -72,6 +125,7 @@ export const CH9_M1_GEOMETRY: Mission = {
             ],
           },
           {
+            kind: 'quiz',
             heading: 'Round 2 · Materials math',
             intro: 'Build-shopping with a calculator.',
             questions: [
@@ -82,18 +136,62 @@ export const CH9_M1_GEOMETRY: Mission = {
               { id: 'q5', question: 'The TV wall is 6 m wide; the TV is 1.4 m. Equal space each side = ?', options: ['1.8 m', '2.3 m', '2.8 m', '4.6 m'], correctIndex: 1, explanation: '(6 − 1.4) ÷ 2 = 2.3 m per side.', hint: 'Subtract, then halve.' },
             ],
           },
+          {
+            kind: 'word-problem',
+            heading: 'Round 3 · Blueprint word problems',
+            intro: 'No answer choices now — work each one out and type the number!',
+            items: [
+              {
+                id: 'w1',
+                visual: '🍿📐',
+                problem: 'The snack corner of the rec room is 3 m long and 2 m wide. What is its area?',
+                answer: 6,
+                unit: 'm²',
+                hint: 'Area = length × width.',
+                explanation: '3 × 2 = 6 m² of snack space.',
+              },
+              {
+                id: 'w2',
+                visual: '🖼️📏',
+                problem: 'Owen’s poster wall is 4 m wide and 2 m tall. A trim strip goes all the way around its edge. How many metres of trim does he need?',
+                answer: 12,
+                unit: 'm',
+                hint: 'Perimeter: add all four sides — 4 + 2 + 4 + 2.',
+                explanation: '2 × (4 + 2) = 12 m of trim.',
+              },
+              {
+                id: 'w3',
+                visual: '🟦🟦🟦',
+                problem: 'Foam tiles are 1 m × 1 m squares. Tessa tiles a game zone that is 5 m long and 3 m wide. How many tiles does she need?',
+                answer: 15,
+                unit: 'tiles',
+                hint: 'Each tile covers exactly 1 m² — find the area of the zone.',
+                explanation: '5 × 3 = 15 m², so 15 tiles.',
+              },
+              {
+                id: 'w4',
+                visual: '🪚🪵',
+                problem: 'A shelf board is 120 cm long. Mama T saws it into 4 equal pieces. How long is each piece?',
+                answer: 30,
+                unit: 'cm',
+                hint: '120 shared equally 4 ways — divide.',
+                explanation: '120 ÷ 4 = 30 cm each.',
+              },
+            ],
+          },
         ],
-      } satisfies QuizMissionParams,
+      } satisfies MixedMissionParams,
     },
     3: {
       wrapper: [
         { text: 'Mama T. Final design pass: circles, angles, volume, and the Pythagorean theorem — because the big TV has to fit up the stairwell.' },
-        { text: 'Two rounds of builder geometry.' },
+        { text: 'Three rounds of builder geometry — the last one you calculate yourself.' },
       ],
       pattern: 'quiz',
       params: {
         rounds: [
           {
+            kind: 'quiz',
             heading: 'Round 1 · Circles, angles, volume',
             intro: 'π ≈ 3.14. Sharpen your pencil.',
             questions: [
@@ -105,6 +203,7 @@ export const CH9_M1_GEOMETRY: Mission = {
             ],
           },
           {
+            kind: 'quiz',
             heading: 'Round 2 · Will it fit?',
             intro: 'The famous moving-day geometry problems.',
             questions: [
@@ -115,8 +214,54 @@ export const CH9_M1_GEOMETRY: Mission = {
               { id: 'q5', question: 'Foam tiles cut at 45° meet in a corner to form what angle together?', options: ['45°', '90°', '135°', '180°'], correctIndex: 1, explanation: 'Two 45° mitre cuts join into a clean 90° corner — the carpenter’s classic.', hint: 'That’s why it’s called a mitre joint.' },
             ],
           },
+          {
+            kind: 'word-problem',
+            heading: 'Round 3 · Work it out on paper',
+            intro: 'Real contractor calculations — pencil out each answer and type it in.',
+            items: [
+              {
+                id: 'w1',
+                visual: '📦📏',
+                problem: 'The toy storage bench is a box 1.5 m long, 0.6 m wide, and 0.5 m tall. What is its volume?',
+                answer: 0.45,
+                tolerance: 0.01,
+                unit: 'm³',
+                hint: 'Volume = length × width × height.',
+                explanation: '1.5 × 0.6 × 0.5 = 0.45 m³ of toy space.',
+              },
+              {
+                id: 'w2',
+                visual: '🎨🧱',
+                problem: 'One can of paint covers 9 m². The feature wall is 6 m wide and 2.4 m tall. How many whole cans must Mama T buy?',
+                answer: 2,
+                unit: 'cans',
+                hint: 'Find the wall area, divide by 9, then round UP — you can’t buy part of a can.',
+                explanation: '6 × 2.4 = 14.4 m²; 14.4 ÷ 9 = 1.6, so she buys 2 cans.',
+              },
+              {
+                id: 'w3',
+                visual: '🎲⭕',
+                problem: 'The round games table has a radius of 0.8 m. What is its area? (Use π ≈ 3.14.)',
+                answer: 2.01,
+                tolerance: 0.02,
+                unit: 'm²',
+                hint: 'A = πr² — square the radius first.',
+                explanation: '3.14 × 0.8² = 3.14 × 0.64 ≈ 2.01 m².',
+              },
+              {
+                id: 'w4',
+                visual: '🔩📐',
+                problem: 'Tessa braces the shelf frame with a diagonal strut. The frame is 0.9 m tall and 1.2 m wide. How long is the strut?',
+                answer: 1.5,
+                tolerance: 0.01,
+                unit: 'm',
+                hint: 'a² + b² = c² — it’s a 3-4-5 triangle in disguise.',
+                explanation: '0.9² + 1.2² = 0.81 + 1.44 = 2.25, and √2.25 = 1.5 m.',
+              },
+            ],
+          },
         ],
-      } satisfies QuizMissionParams,
+      } satisfies MixedMissionParams,
     },
   },
 };
@@ -135,12 +280,13 @@ export const CH9_M2_BUILD_BUDGET: Mission = {
     1: {
       wrapper: [
         { text: 'Izzy! The basement budget is $100 and EVERYONE wants something different. Treasurer Izzy to the rescue.' },
-        { text: 'Match the money problems to keep the build on track.' },
+        { text: 'Match the money problems, then count the build supplies!' },
       ],
       pattern: 'drag-match',
       params: {
         rounds: [
           {
+            kind: 'drag-match',
             heading: 'Round 1 · Spending the $100',
             intro: 'Match each purchase to what’s left.',
             pairs: [
@@ -153,6 +299,7 @@ export const CH9_M2_BUILD_BUDGET: Mission = {
             stuckHint: 'Subtract each purchase from what was left before.',
           },
           {
+            kind: 'drag-match',
             heading: 'Round 2 · Fair shares',
             intro: 'Four kids, one budget. Match the sharing problems.',
             pairs: [
@@ -164,18 +311,68 @@ export const CH9_M2_BUILD_BUDGET: Mission = {
             ],
             stuckHint: 'Sharing fairly means dividing into equal groups.',
           },
+          {
+            kind: 'counting',
+            heading: 'Round 3 · Count the supplies',
+            intro: 'Izzy dumped the supply bin on the table. Count everything before we shop!',
+            items: [
+              {
+                id: 'c1',
+                prompt: 'How many loonies are in Izzy’s budget jar?',
+                groups: [{ emoji: '🪙', count: 8 }],
+                answer: 8,
+                options: [6, 7, 8, 9],
+                hint: 'Line the coins up and count them one by one.',
+                explanation: 'Eight shiny loonies for the build fund!',
+              },
+              {
+                id: 'c2',
+                prompt: 'Caleb has 4 helper stickers and Izzy gives him 3 more. How many stickers now?',
+                groups: [
+                  { emoji: '⭐', count: 4, label: 'Caleb’s' },
+                  { emoji: '⭐', count: 3, label: 'From Izzy' },
+                ],
+                answer: 7,
+                options: [5, 6, 7, 8],
+                hint: 'Start at 4 and count up 3 more.',
+                explanation: '4 + 3 = 7 stickers — best helper ever!',
+              },
+              {
+                id: 'c3',
+                prompt: 'How many paint brushes did Dada T bring down?',
+                groups: [{ emoji: '🖌️', count: 5 }],
+                answer: 5,
+                options: [4, 5, 6, 7],
+                hint: 'Point at each brush as you count.',
+                explanation: 'Five brushes — one for each painter!',
+              },
+              {
+                id: 'c4',
+                prompt: 'Owen counts screws: 5 in the small bag and 5 in the big bag. How many in all?',
+                groups: [
+                  { emoji: '🔩', count: 5, label: 'Small bag' },
+                  { emoji: '🔩', count: 5, label: 'Big bag' },
+                ],
+                answer: 10,
+                options: [8, 9, 10, 11],
+                hint: '5 and 5 — count on your fingers!',
+                explanation: '5 + 5 = 10 screws, enough for the whole shelf.',
+              },
+            ],
+          },
         ],
-      } satisfies DragMatchMissionParams,
+      } satisfies MixedMissionParams,
     },
     2: {
       wrapper: [
         { text: 'Izzy. Real budget: $400, and the wish list is $600. Welcome to trade-off city, population: us.' },
-        { text: 'Round 1: discounts and totals. Round 2: the great trade-off.' },
+        { text: 'Round 1: discounts and totals. Round 2: the great trade-off. Round 3: receipt math — type the totals.' },
       ],
       pattern: 'drag-match',
       params: {
         rounds: [
           {
+            kind: 'drag-match',
             heading: 'Round 1 · Sale-rack math',
             intro: 'Match each deal to its price.',
             pairs: [
@@ -188,6 +385,7 @@ export const CH9_M2_BUILD_BUDGET: Mission = {
             stuckHint: '25% off means pay 75%. 50% off means pay half.',
           },
           {
+            kind: 'drag-match',
             heading: 'Round 2 · The great trade-off',
             intro: 'Wish list: couch $200, TV $250, console $150, table $80, lights $40. Budget: $400.',
             pairs: [
@@ -199,18 +397,62 @@ export const CH9_M2_BUILD_BUDGET: Mission = {
             ],
             stuckHint: 'List totals first, then compare against $400.',
           },
+          {
+            kind: 'word-problem',
+            heading: 'Round 3 · Receipt math',
+            intro: 'Izzy hands you the receipts — no answer choices, just you and the numbers.',
+            items: [
+              {
+                id: 'w1',
+                visual: '🛋️🧾',
+                problem: 'The beanbag costs $35 and the game shelf costs $48. What do they cost together?',
+                answer: 83,
+                unit: 'dollars',
+                hint: 'Add the two prices.',
+                explanation: '35 + 48 = $83.',
+              },
+              {
+                id: 'w2',
+                visual: '🪑🪑🪑🪑',
+                problem: 'Four folding chairs cost $24 each. What is the total for all four?',
+                answer: 96,
+                unit: 'dollars',
+                hint: 'Four groups of 24 — multiply.',
+                explanation: '4 × 24 = $96.',
+              },
+              {
+                id: 'w3',
+                visual: '💰🧮',
+                problem: 'Izzy’s budget is $400. So far the family has spent $268. How much is left?',
+                answer: 132,
+                unit: 'dollars',
+                hint: 'Start at 400 and subtract 268.',
+                explanation: '400 − 268 = $132 still in the jar.',
+              },
+              {
+                id: 'w4',
+                visual: '🏷️✂️',
+                problem: 'The $60 rug is on sale for half price. What does it cost now?',
+                answer: 30,
+                unit: 'dollars',
+                hint: 'Half price means divide by 2.',
+                explanation: '60 ÷ 2 = $30 — Izzy loves a sale.',
+              },
+            ],
+          },
         ],
-      } satisfies DragMatchMissionParams,
+      } satisfies MixedMissionParams,
     },
     3: {
       wrapper: [
         { text: 'Izzy. Spreadsheet open. We’re optimizing: cost per use, financing traps, and opportunity cost. The basement deserves rigour.' },
-        { text: 'Two rounds of sharp-pencil decisions.' },
+        { text: 'Three rounds of sharp-pencil decisions — the last one you compute yourself.' },
       ],
       pattern: 'drag-match',
       params: {
         rounds: [
           {
+            kind: 'drag-match',
             heading: 'Round 1 · Smart-money calculations',
             intro: 'Match each scenario to its answer.',
             pairs: [
@@ -223,6 +465,7 @@ export const CH9_M2_BUILD_BUDGET: Mission = {
             stuckHint: 'Stacked discounts multiply: 0.8 × 0.9 = 0.72 of the price.',
           },
           {
+            kind: 'drag-match',
             heading: 'Round 2 · Opportunity cost',
             intro: 'Every dollar spent is a dollar not spent elsewhere.',
             pairs: [
@@ -234,8 +477,52 @@ export const CH9_M2_BUILD_BUDGET: Mission = {
             ],
             stuckHint: 'Opportunity cost = what ELSE that money/time could have done.',
           },
+          {
+            kind: 'word-problem',
+            heading: 'Round 3 · The treasurer’s ledger',
+            intro: 'Izzy’s final audit. Show your work, type your answers.',
+            items: [
+              {
+                id: 'w1',
+                visual: '🛒🏷️',
+                problem: 'A $250 couch is 30% off. What is the sale price?',
+                answer: 175,
+                unit: 'dollars',
+                hint: '30% off means you pay 70% of the price.',
+                explanation: '250 × 0.70 = $175.',
+              },
+              {
+                id: 'w2',
+                visual: '🔊🧾',
+                problem: 'The speaker set costs $140 plus 13% HST. What is the total at the register?',
+                answer: 158.2,
+                tolerance: 0.01,
+                unit: 'dollars',
+                hint: 'Find 13% of 140, then add it on — or multiply by 1.13.',
+                explanation: '13% of 140 = $18.20, so 140 + 18.20 = $158.20.',
+              },
+              {
+                id: 'w3',
+                visual: '📽️🐖',
+                problem: 'Izzy saves $12 a week toward a $300 projector. She already has $84. How many weeks until she can buy it?',
+                answer: 18,
+                unit: 'weeks',
+                hint: 'Find what’s still needed first, then divide by 12.',
+                explanation: '300 − 84 = 216, and 216 ÷ 12 = 18 weeks.',
+              },
+              {
+                id: 'w4',
+                visual: '🏷️🏷️',
+                problem: 'A $120 table is 25% off, then an EXTRA 10% off the sale price. What is the final price?',
+                answer: 81,
+                unit: 'dollars',
+                hint: 'Take the discounts one at a time — they multiply, they don’t add.',
+                explanation: '120 × 0.75 = 90, then 90 × 0.90 = $81 (not $78!).',
+              },
+            ],
+          },
         ],
-      } satisfies DragMatchMissionParams,
+      } satisfies MixedMissionParams,
     },
   },
 };
@@ -280,12 +567,13 @@ export const CH9_M3_SMARTBOT: Mission = {
     2: {
       wrapper: [
         { text: 'Tessa. The snack-bot’s floor plan got complicated — couch, table, shelf, all in the way.' },
-        { text: 'Two deliveries. Plan the full path before running.' },
+        { text: 'Two deliveries, then decode the bot’s beeping number patterns.' },
       ],
       pattern: 'code-robot',
       params: {
         rounds: [
           {
+            kind: 'code-robot',
             heading: 'Round 1 · The living-corner loop',
             intro: 'Around the couch to the far corner.',
             cols: 5, rows: 4,
@@ -294,6 +582,7 @@ export const CH9_M3_SMARTBOT: Mission = {
             walls: [{ x: 1, y: 1 }, { x: 1, y: 2 }, { x: 2, y: 2 }],
           },
           {
+            kind: 'code-robot',
             heading: 'Round 2 · Shelf alley',
             intro: 'Snake through the shelf aisle.',
             cols: 5, rows: 5,
@@ -301,8 +590,51 @@ export const CH9_M3_SMARTBOT: Mission = {
             goal: { x: 2, y: 0 },
             walls: [{ x: 1, y: 1 }, { x: 3, y: 1 }, { x: 1, y: 3 }, { x: 3, y: 3 }, { x: 2, y: 2 }],
           },
+          {
+            kind: 'pattern-puzzle',
+            heading: 'Round 3 · The bot’s number code',
+            intro: 'The snack-bot beeps in patterns. Predict the next beep to unlock its turbo mode!',
+            items: [
+              {
+                id: 'p1',
+                prompt: 'The bot beeps: 2, 4, 6, 8… what comes next?',
+                sequence: ['2', '4', '6', '8'],
+                options: ['9', '10', '12', '14'],
+                correctIndex: 1,
+                hint: 'The bot is counting by 2s.',
+                explanation: 'Add 2 each time: 8 + 2 = 10.',
+              },
+              {
+                id: 'p2',
+                prompt: 'Now it doubles: 1, 2, 4, 8, 16… next?',
+                sequence: ['1', '2', '4', '8', '16'],
+                options: ['18', '24', '32', '20'],
+                correctIndex: 2,
+                hint: 'Each number is double the one before.',
+                explanation: 'Doubling again: 16 × 2 = 32.',
+              },
+              {
+                id: 'p3',
+                prompt: 'Battery countdown: 100, 90, 81, 73… next?',
+                sequence: ['100', '90', '81', '73'],
+                options: ['66', '65', '63', '70'],
+                correctIndex: 0,
+                hint: 'Look at how much it drops each step: 10, then 9, then 8…',
+                explanation: 'The drop shrinks by 1 each time, so 73 − 7 = 66.',
+              },
+              {
+                id: 'p4',
+                prompt: 'The bot’s program repeats: F, F, L, F, F, L, F, F… what command comes next?',
+                sequence: ['F', 'F', 'L', 'F', 'F', 'L', 'F', 'F'],
+                options: ['F', 'L', 'R', '⏸'],
+                correctIndex: 1,
+                hint: 'The loop is forward, forward, turn — over and over.',
+                explanation: 'The repeating block is F-F-L, so after two Fs comes L. That’s a loop!',
+              },
+            ],
+          },
         ],
-      } satisfies CodeRobotMissionParams,
+      } satisfies MixedMissionParams,
     },
     3: {
       wrapper: [
@@ -353,68 +685,158 @@ export const CH10_M1_MEDIA: Mission = {
     1: {
       wrapper: [
         { text: 'Tessa here. At the kitchen table we read the news together — and learn to ask: is this REAL?' },
-        { text: 'Round 1: real or pretend? Round 2: ads versus news.' },
+        { text: 'Round 1: real or pretend? Round 2: ads versus news. Round 3: spot the pattern!' },
       ],
       pattern: 'quiz',
       params: {
         rounds: [
           {
+            kind: 'quiz',
             heading: 'Round 1 · Real or pretend?',
             intro: 'Some things we read are true, some are stories, some are tricks.',
             questions: [
-              { id: 'q1', question: '“Dragons closed the highway today.” This is probably…', options: ['Real news', 'Pretend — dragons aren’t real', 'A weather report', 'A recipe'], correctIndex: 1, explanation: 'Dragons are fantasy! Real news is about things that actually happen.', hint: 'Have you ever met a dragon?' },
-              { id: 'q2', question: '“It will rain tomorrow, says Environment Canada.” This is…', options: ['A made-up story', 'A real forecast from real scientists', 'A joke', 'An ad'], correctIndex: 1, explanation: 'Weather forecasts come from scientists measuring the real sky.', hint: 'Who is saying it?' },
-              { id: 'q3', question: 'A cartoon about a talking dog is…', options: ['News', 'A story for fun — and that’s okay!', 'A lie', 'A documentary'], correctIndex: 1, explanation: 'Stories and shows are pretend ON PURPOSE — that’s entertainment, not tricking.', hint: 'Is it trying to fool you, or fun you?' },
-              { id: 'q4', question: 'Who can put things on the internet?', options: ['Only teachers', 'Only news people', 'Almost anyone', 'Only robots'], correctIndex: 2, explanation: 'Anyone can post — which is why we check before we believe!', hint: 'Could YOU post a picture?' },
-              { id: 'q5', question: 'If something online seems too amazing to be true, you should…', options: ['Believe it right away', 'Ask a grown-up and check together', 'Share it fast', 'Cry'], correctIndex: 1, explanation: 'Checking together is what smart readers do. Amazing claims need good proof.', hint: 'Who can help you check?' },
+              { id: 'q1', visual: '🐉🛣️', question: '“Dragons closed the highway today.” This is probably…', options: ['Real news', 'Pretend — dragons aren’t real', 'A weather report', 'A recipe'], correctIndex: 1, explanation: 'Dragons are fantasy! Real news is about things that actually happen.', hint: 'Have you ever met a dragon?' },
+              { id: 'q2', visual: '🌧️📻', question: '“It will rain tomorrow, says Environment Canada.” This is…', options: ['A made-up story', 'A real forecast from real scientists', 'A joke', 'An ad'], correctIndex: 1, explanation: 'Weather forecasts come from scientists measuring the real sky.', hint: 'Who is saying it?' },
+              { id: 'q3', visual: '📺🐶', question: 'A cartoon about a talking dog is…', options: ['News', 'A story for fun — and that’s okay!', 'A lie', 'A documentary'], correctIndex: 1, explanation: 'Stories and shows are pretend ON PURPOSE — that’s entertainment, not tricking.', hint: 'Is it trying to fool you, or fun you?' },
+              { id: 'q4', visual: '🌐💻📱', question: 'Who can put things on the internet?', options: ['Only teachers', 'Only news people', 'Almost anyone', 'Only robots'], correctIndex: 2, explanation: 'Anyone can post — which is why we check before we believe!', hint: 'Could YOU post a picture?' },
+              { id: 'q5', visual: '🤯📱', question: 'If something online seems too amazing to be true, you should…', options: ['Believe it right away', 'Ask a grown-up and check together', 'Share it fast', 'Cry'], correctIndex: 1, explanation: 'Checking together is what smart readers do. Amazing claims need good proof.', hint: 'Who can help you check?' },
             ],
           },
           {
+            kind: 'quiz',
             heading: 'Round 2 · Ads vs news',
             intro: 'Ads want something from you. Can you spot them?',
             questions: [
-              { id: 'q1', question: '“SUPER-ZOOM SHOES make you run FASTER! Buy now!” This is…', options: ['News', 'An ad — it wants you to buy', 'Science', 'A warning'], correctIndex: 1, explanation: '“Buy now!” is the giveaway — ads sell things.', hint: 'What does it want you to DO?' },
-              { id: 'q2', question: 'Why do toy ads make toys look extra fun?', options: ['Toys are always like that', 'To make you want them', 'It’s the law', 'Cameras are magic'], correctIndex: 1, explanation: 'Ads show the very best moments (and sometimes more) to make you want the thing.', hint: 'Ads are made by the sellers.' },
-              { id: 'q3', question: 'A YouTuber says “this candy is amazing” and the video says “#sponsored.” That means…', options: ['They’re paid to say it', 'They grew the candy', 'It’s a news report', 'Nothing'], correctIndex: 0, explanation: '“Sponsored” means the company paid for the praise. Worth knowing!', hint: 'Look up what "sponsor" means.' },
+              { id: 'q1', visual: '👟💨', question: '“SUPER-ZOOM SHOES make you run FASTER! Buy now!” This is…', options: ['News', 'An ad — it wants you to buy', 'Science', 'A warning'], correctIndex: 1, explanation: '“Buy now!” is the giveaway — ads sell things.', hint: 'What does it want you to DO?' },
+              { id: 'q2', visual: '🧸📺', question: 'Why do toy ads make toys look extra fun?', options: ['Toys are always like that', 'To make you want them', 'It’s the law', 'Cameras are magic'], correctIndex: 1, explanation: 'Ads show the very best moments (and sometimes more) to make you want the thing.', hint: 'Ads are made by the sellers.' },
+              { id: 'q3', visual: '🍬📹', question: 'A YouTuber says “this candy is amazing” and the video says “#sponsored.” That means…', options: ['They’re paid to say it', 'They grew the candy', 'It’s a news report', 'Nothing'], correctIndex: 0, explanation: '“Sponsored” means the company paid for the praise. Worth knowing!', hint: 'Look up what "sponsor" means.' },
               { id: 'q4', question: 'News tries to tell you what happened. Ads try to…', options: ['Teach math', 'Sell you something', 'Make you sleepy', 'Report weather'], correctIndex: 1, explanation: 'That’s the core difference — informing vs selling.', hint: 'Follow the money.' },
-              { id: 'q5', question: 'The cereal box says “KIDS LOVE IT!” Who wrote that?', options: ['Scientists', 'The cereal company', 'Your school', 'The government'], correctIndex: 1, explanation: 'The company selling the cereal wrote it — they’re not exactly neutral!', hint: 'Whose box is it?' },
+              { id: 'q5', visual: '🥣', question: 'The cereal box says “KIDS LOVE IT!” Who wrote that?', options: ['Scientists', 'The cereal company', 'Your school', 'The government'], correctIndex: 1, explanation: 'The company selling the cereal wrote it — they’re not exactly neutral!', hint: 'Whose box is it?' },
+            ],
+          },
+          {
+            kind: 'pattern-puzzle',
+            heading: 'Round 3 · Spot the pattern',
+            intro: 'Tessa says: sharp eyes spot patterns — and pattern-spotters are hard to fool!',
+            items: [
+              {
+                id: 'p1',
+                prompt: 'On the kitchen table: TV guide, newspaper, TV guide, newspaper… what comes next?',
+                sequence: ['📺', '📰', '📺', '📰', '📺'],
+                options: ['📺', '📰', '📱', '🎬'],
+                correctIndex: 1,
+                hint: 'They take turns: TV, paper, TV, paper…',
+                explanation: 'The pattern alternates, so after 📺 comes 📰.',
+              },
+              {
+                id: 'p2',
+                prompt: 'Owen’s reading pile repeats: phone, phone, book… what comes next?',
+                sequence: ['📱', '📱', '📚', '📱', '📱'],
+                options: ['📱', '📚', '📺', '🎧'],
+                correctIndex: 1,
+                hint: 'Two phones, then a book — again and again.',
+                explanation: 'The repeating block is 📱📱📚, so a 📚 is next.',
+              },
+              {
+                id: 'p3',
+                prompt: 'Movie night snacks line up: what comes next?',
+                sequence: ['🎬', '🍿', '🍿', '🎬', '🍿', '🍿', '🎬'],
+                options: ['🎬', '🍿', '🧃', '🍎'],
+                correctIndex: 1,
+                hint: 'One movie, then TWO popcorns.',
+                explanation: 'The block is 🎬🍿🍿 — after 🎬 come the popcorns.',
+              },
+              {
+                id: 'p4',
+                prompt: 'Caleb rates his shows with stars. The rows grow: what comes next?',
+                sequence: ['⭐', '⭐⭐', '⭐⭐⭐'],
+                options: ['⭐', '⭐⭐', '⭐⭐⭐', '⭐⭐⭐⭐'],
+                correctIndex: 3,
+                hint: 'Each row gets one more star.',
+                explanation: 'One more star each time — four stars come next.',
+              },
             ],
           },
         ],
-      } satisfies QuizMissionParams,
+      } satisfies MixedMissionParams,
     },
     2: {
       wrapper: [
         { text: 'Tessa. Kitchen-table news club, level two: sources, headlines, and the tricks that fool smart people.' },
-        { text: 'Round 1: checking sources. Round 2: headline tricks.' },
+        { text: 'Round 1: checking sources. Round 2: headline tricks. Round 3: the algorithm game.' },
       ],
       pattern: 'quiz',
       params: {
         rounds: [
           {
+            kind: 'quiz',
             heading: 'Round 1 · Check the source',
             intro: 'WHO says it matters as much as WHAT they say.',
             questions: [
               { id: 'q1', question: 'The most trustworthy source for a science claim is…', options: ['A random comment', 'A meme', 'Scientists/organizations who study it, cited by name', 'The loudest post'], correctIndex: 2, explanation: 'Named experts and organizations can be checked; anonymous claims can’t.', hint: 'Can you verify who said it?' },
-              { id: 'q2', question: 'A website selling vitamins says “doctors don’t want you to know this!” Be cautious because…', options: ['Doctors are shy', 'The site profits if you believe it — a conflict of interest', 'Websites can’t lie', 'Vitamins are illegal'], correctIndex: 1, explanation: 'When the claimer profits from your belief, demand stronger evidence.', hint: 'Who makes money here?' },
+              { id: 'q2', visual: '💊🖥️', question: 'A website selling vitamins says “doctors don’t want you to know this!” Be cautious because…', options: ['Doctors are shy', 'The site profits if you believe it — a conflict of interest', 'Websites can’t lie', 'Vitamins are illegal'], correctIndex: 1, explanation: 'When the claimer profits from your belief, demand stronger evidence.', hint: 'Who makes money here?' },
               { id: 'q3', question: 'Two unrelated news outlets AND a government data page report the same fact. This is called…', options: ['A coincidence', 'Corroboration — and it strengthens the claim', 'Copying', 'A conspiracy'], correctIndex: 1, explanation: 'Independent sources agreeing is the backbone of verification — same as Owen’s hockey history lesson!', hint: 'Multiple independent witnesses.' },
-              { id: 'q4', question: 'A photo looks shocking but has no date or place. First move?', options: ['Share immediately', 'Reverse-image-search it / check where it’s really from', 'Believe the caption', 'Print it'], correctIndex: 1, explanation: 'Old photos with new captions are the #1 misinformation trick. Check the original.', hint: 'Photos travel; captions change.' },
+              { id: 'q4', visual: '📷❗', question: 'A photo looks shocking but has no date or place. First move?', options: ['Share immediately', 'Reverse-image-search it / check where it’s really from', 'Believe the caption', 'Print it'], correctIndex: 1, explanation: 'Old photos with new captions are the #1 misinformation trick. Check the original.', hint: 'Photos travel; captions change.' },
               { id: 'q5', question: '“A study says…” — the best follow-up question is:', options: ['Which study, by whom, of how many?', 'What font was it in?', 'Was it long?', 'No questions'], correctIndex: 0, explanation: 'A real study has authors, methods, and sample sizes you can examine.', hint: 'Demand the details.' },
             ],
           },
           {
+            kind: 'quiz',
             heading: 'Round 2 · Headline tricks',
             intro: 'Spot the technique.',
             questions: [
-              { id: 'q1', question: '“You WON’T BELIEVE what this hockey player did!!” is…', options: ['Clickbait — it hides the story to farm clicks', 'Great journalism', 'A stats report', 'A quote'], correctIndex: 0, explanation: 'Withholding the actual news to force a click is clickbait’s whole business model.', hint: 'Does it inform, or tease?' },
+              { id: 'q1', visual: '😱📱', question: '“You WON’T BELIEVE what this hockey player did!!” is…', options: ['Clickbait — it hides the story to farm clicks', 'Great journalism', 'A stats report', 'A quote'], correctIndex: 0, explanation: 'Withholding the actual news to force a click is clickbait’s whole business model.', hint: 'Does it inform, or tease?' },
               { id: 'q2', question: '“Scientists SLAM new park plan” — “slam” is doing what?', options: ['Reporting neutrally', 'Loading the emotion — they likely “criticized” or “questioned”', 'Quoting someone', 'Nothing'], correctIndex: 1, explanation: 'Emotionally loaded verbs shape your feelings before the facts arrive.', hint: 'Compare: “scientists question…”' },
-              { id: 'q3', question: 'A poll of 6 friends becomes “EVERYONE hates the new rule.” The trick is…', options: ['Tiny sample presented as everyone', 'Math error', 'Honest reporting', 'A typo'], correctIndex: 0, explanation: 'Six people isn’t “everyone” — sample size matters (Tessa’s goalie lesson again).', hint: 'How many people is "everyone"?' },
-              { id: 'q4', question: '“Ice cream sales and sunburns rise together — ice cream causes sunburn!” The error?', options: ['No error', 'Correlation mistaken for causation (summer causes both)', 'Bad spelling', 'Sample size'], correctIndex: 1, explanation: 'A third factor — sunny weather — drives both. Classic correlation trap.', hint: 'What ELSE happens in summer?' },
-              { id: 'q5', question: 'An outlet only ever reports bad news about one hockey team and good news about its rival. That pattern is…', options: ['Bias by selection — true stories, slanted picture', 'Fine', 'Illegal', 'Impossible'], correctIndex: 0, explanation: 'Even with every story true, choosing WHICH stories to tell shapes the picture. Read across outlets.', hint: 'What’s missing matters.' },
+              { id: 'q3', visual: '🗳️👧👦', question: 'A poll of 6 friends becomes “EVERYONE hates the new rule.” The trick is…', options: ['Tiny sample presented as everyone', 'Math error', 'Honest reporting', 'A typo'], correctIndex: 0, explanation: 'Six people isn’t “everyone” — sample size matters (Tessa’s goalie lesson again).', hint: 'How many people is "everyone"?' },
+              { id: 'q4', visual: '🍦📈', question: '“Ice cream sales and sunburns rise together — ice cream causes sunburn!” The error?', options: ['No error', 'Correlation mistaken for causation (summer causes both)', 'Bad spelling', 'Sample size'], correctIndex: 1, explanation: 'A third factor — sunny weather — drives both. Classic correlation trap.', hint: 'What ELSE happens in summer?' },
+              { id: 'q5', visual: '🏒📰', question: 'An outlet only ever reports bad news about one hockey team and good news about its rival. That pattern is…', options: ['Bias by selection — true stories, slanted picture', 'Fine', 'Illegal', 'Impossible'], correctIndex: 0, explanation: 'Even with every story true, choosing WHICH stories to tell shapes the picture. Read across outlets.', hint: 'What’s missing matters.' },
+            ],
+          },
+          {
+            kind: 'pattern-puzzle',
+            heading: 'Round 3 · The algorithm game',
+            intro: 'Feeds run on patterns — they predict what you’ll tap next. Can you out-predict them?',
+            items: [
+              {
+                id: 'p1',
+                prompt: 'You tapped hockey videos all week. What does the feed serve next?',
+                sequence: ['🏒', '🏒', '🏒', '🏒'],
+                options: ['🏒', '🌱', '📚', '🎻'],
+                correctIndex: 0,
+                hint: 'Algorithms repeat whatever got your last click.',
+                explanation: 'More hockey! Feeds echo your clicks — that’s how echo chambers start.',
+              },
+              {
+                id: 'p2',
+                prompt: 'A silly video gets 1 share, then 2, then 4, then 8. If the doubling keeps up, how many next?',
+                sequence: ['1', '2', '4', '8'],
+                options: ['12', '16', '10', '24'],
+                correctIndex: 1,
+                hint: 'Each number is double the one before.',
+                explanation: '8 × 2 = 16 shares. Doubling is why things go viral fast.',
+              },
+              {
+                id: 'p3',
+                prompt: 'The fact-checking club grows: 2, 5, 8, 11 members each month. Next month?',
+                sequence: ['2', '5', '8', '11'],
+                options: ['13', '14', '15', '12'],
+                correctIndex: 1,
+                hint: 'How many join each month? It’s the same jump every time.',
+                explanation: 'Up 3 each month: 11 + 3 = 14 members.',
+              },
+              {
+                id: 'p4',
+                prompt: 'Owen trims his scroll time: 60, 50, 40, 30 minutes each week. Next week?',
+                sequence: ['60', '50', '40', '30'],
+                options: ['25', '20', '10', '35'],
+                correctIndex: 1,
+                hint: 'The minutes drop by the same amount every week.',
+                explanation: 'Down 10 each week: 30 − 10 = 20 minutes. More time for the rec room!',
+              },
             ],
           },
         ],
-      } satisfies QuizMissionParams,
+      } satisfies MixedMissionParams,
     },
     3: {
       wrapper: [
@@ -429,10 +851,10 @@ export const CH10_M1_MEDIA: Mission = {
             intro: 'Know the machine to resist it.',
             questions: [
               { id: 'q1', question: 'Misinformation vs disinformation: the difference is…', options: ['Spelling', 'Intent — disinformation is deliberately false; misinformation may be shared in good faith', 'Length', 'Platform'], correctIndex: 1, explanation: 'Both are false; disinformation is built to deceive. Your aunt resharing it in good faith is misinformation.', hint: 'One word implies a liar.' },
-              { id: 'q2', question: 'False news often spreads faster than true news online because…', options: ['It’s better written', 'Novel + emotional content gets shared more, and algorithms amplify engagement', 'Truth is boring by law', 'Hackers'], correctIndex: 1, explanation: 'Research (MIT, 2018) found falsehood spreads farther/faster — outrage and novelty drive shares, and feeds optimize for engagement.', hint: 'What do algorithms reward?' },
+              { id: 'q2', visual: '📱💨', question: 'False news often spreads faster than true news online because…', options: ['It’s better written', 'Novel + emotional content gets shared more, and algorithms amplify engagement', 'Truth is boring by law', 'Hackers'], correctIndex: 1, explanation: 'Research (MIT, 2018) found falsehood spreads farther/faster — outrage and novelty drive shares, and feeds optimize for engagement.', hint: 'What do algorithms reward?' },
               { id: 'q3', question: 'An “echo chamber” is…', options: ['A recording studio', 'An information space where you mostly meet views like your own', 'A library', 'A podcast'], correctIndex: 1, explanation: 'Personalized feeds + chosen communities can filter out disagreement — beliefs harden unchallenged.', hint: 'What bounces back at you?' },
               { id: 'q4', question: 'Confirmation bias makes us…', options: ['Check everything equally', 'Accept claims that fit our beliefs more easily than ones that don’t', 'Believe nothing', 'Forget names'], correctIndex: 1, explanation: 'We all do it — the fix is applying the SAME scrutiny to claims we like.', hint: 'Which claims do you fact-check least?' },
-              { id: 'q5', question: 'Deepfakes mean that for video evidence…', options: ['Seeing is always believing', 'Provenance (who filmed it, when, original source) matters more than ever', 'Video is banned', 'Nothing changed'], correctIndex: 1, explanation: 'When fabrication is cheap, the chain of custody — Owen’s “provenance” — becomes the real evidence.', hint: 'The museum lesson applies to video now.' },
+              { id: 'q5', visual: '🎥❓', question: 'Deepfakes mean that for video evidence…', options: ['Seeing is always believing', 'Provenance (who filmed it, when, original source) matters more than ever', 'Video is banned', 'Nothing changed'], correctIndex: 1, explanation: 'When fabrication is cheap, the chain of custody — Owen’s “provenance” — becomes the real evidence.', hint: 'The museum lesson applies to video now.' },
             ],
           },
           {
@@ -443,7 +865,7 @@ export const CH10_M1_MEDIA: Mission = {
               { id: 'q2', question: '“Lateral reading” means…', options: ['Reading lying down', 'Leaving the page to check what OTHER sources say about the claim and the site', 'Reading the whole article', 'Reading comments'], correctIndex: 1, explanation: 'Fact-checkers open new tabs immediately — the page about itself is the least reliable witness.', hint: 'Sideways, to other tabs.' },
               { id: 'q3', question: 'Best quick check for a suspicious quote attributed to a famous person:', options: ['Assume it’s real if it sounds like them', 'Search the exact quote + a fact-check site', 'Count the likes', 'Check the font'], correctIndex: 1, explanation: 'Fabricated quotes are everywhere; exact-phrase search plus Snopes/AFP/Reuters checks settles most in a minute.', hint: 'Exact words, quoted search.' },
               { id: 'q4', question: 'A primary source for “the city cut library funding” would be…', options: ['A tweet about it', 'The city’s published budget document', 'A meme', 'An opinion column'], correctIndex: 1, explanation: 'The budget itself is the document of record — everything else is interpretation.', hint: 'The document of record.' },
-              { id: 'q5', question: 'You shared something that turned out false. The responsible move is…', options: ['Delete quietly and move on', 'Correct it as visibly as you shared it', 'Defend it', 'Blame the algorithm'], correctIndex: 1, explanation: 'Visible corrections repair the damage and build credibility — the correction should travel as far as the mistake.', hint: 'Same audience, same volume.' },
+              { id: 'q5', visual: '😬📱', question: 'You shared something that turned out false. The responsible move is…', options: ['Delete quietly and move on', 'Correct it as visibly as you shared it', 'Defend it', 'Blame the algorithm'], correctIndex: 1, explanation: 'Visible corrections repair the damage and build credibility — the correction should travel as far as the mistake.', hint: 'Same audience, same volume.' },
             ],
           },
         ],
@@ -466,12 +888,13 @@ export const CH10_M2_FACT_OPINION: Mission = {
     1: {
       wrapper: [
         { text: 'Owen here. Tessa says good readers can tell FACTS from OPINIONS. Game on.' },
-        { text: 'Facts can be checked. Opinions are what someone feels. Sort them!' },
+        { text: 'Facts can be checked. Opinions are what someone feels. Sort them — then a lightning quiz!' },
       ],
       pattern: 'drag-match',
       params: {
         rounds: [
           {
+            kind: 'drag-match',
             heading: 'Round 1 · Fact or opinion?',
             intro: 'Match each statement to what it is.',
             pairs: [
@@ -484,6 +907,7 @@ export const CH10_M2_FACT_OPINION: Mission = {
             stuckHint: 'Ask: could we CHECK this? Or is it how someone FEELS?',
           },
           {
+            kind: 'drag-match',
             heading: 'Round 2 · Spot the clue words',
             intro: 'Some words signal opinions. Match them!',
             pairs: [
@@ -495,8 +919,19 @@ export const CH10_M2_FACT_OPINION: Mission = {
             ],
             stuckHint: 'Numbers and dates can be checked. "Best" and "yucky" live in someone’s head.',
           },
+          {
+            kind: 'quiz',
+            heading: 'Round 3 · Lightning round',
+            intro: 'Last check, detective! Look at each scene and call it: fact or opinion?',
+            questions: [
+              { id: 'q1', visual: '❄️🧤', question: '“Snow is cold.” Fact or opinion?', options: ['Fact — a thermometer can check it', 'Opinion', 'A joke', 'A question'], correctIndex: 0, explanation: 'You can measure snow’s temperature — checkable means fact!', hint: 'Could you check it with a thermometer?' },
+              { id: 'q2', visual: '🍕', question: '“Pizza is the yummiest food ever.” Fact or opinion?', options: ['Fact', 'Opinion — “yummiest” is a feeling word', 'A recipe', 'News'], correctIndex: 1, explanation: '“Yummiest” lives in someone’s head — Izzy might pick tacos!', hint: 'Can you measure “yummiest”?' },
+              { id: 'q3', visual: '🐕🐾', question: '“Dogs have four legs.” Fact or opinion?', options: ['Opinion', 'Fact — you can count them!', 'A story', 'A wish'], correctIndex: 1, explanation: 'Counting is checking — that makes it a fact.', hint: 'Could you check it by looking at a dog?' },
+              { id: 'q4', visual: '📚🛏️', question: '“Bedtime stories are boring,” says Owen. That is…', options: ['A fact', 'Owen’s opinion — Caleb loves them!', 'A rule', 'News'], correctIndex: 1, explanation: '“Boring” is a feeling word — it changes from person to person.', hint: 'Does everyone feel the same about stories?' },
+            ],
+          },
         ],
-      } satisfies DragMatchMissionParams,
+      } satisfies MixedMissionParams,
     },
     2: {
       wrapper: [
@@ -585,12 +1020,13 @@ export const CH10_M3_SURVEY: Mission = {
     1: {
       wrapper: [
         { text: 'Izzy! For the family-room redesign, I surveyed everyone about colours and snacks. DATA!' },
-        { text: 'Help me count the votes and read my charts.' },
+        { text: 'Three rounds: colour votes, the snack survey, then count the movie-night hands!' },
       ],
       pattern: 'quiz',
       params: {
         rounds: [
           {
+            kind: 'quiz',
             heading: 'Round 1 · Count the votes',
             intro: 'Colour votes: Teal: Mama T, Tessa, Caleb. Yellow: Izzy, Owen. Coral: Dada T.',
             questions: [
@@ -602,6 +1038,7 @@ export const CH10_M3_SURVEY: Mission = {
             ],
           },
           {
+            kind: 'quiz',
             heading: 'Round 2 · Snack survey',
             intro: 'Movie-snack votes: Popcorn 𝍸 (5)… wait, that’s more than 6! Caleb voted twice!',
             questions: [
@@ -612,18 +1049,68 @@ export const CH10_M3_SURVEY: Mission = {
               { id: 'q5', question: 'Next survey, how do we stop double votes?', options: ['No rules', 'Check names off a list as they vote', 'Let Caleb count', 'Vote by yelling'], correctIndex: 1, explanation: 'A checklist makes one-person-one-vote stick. Good data starts with good collecting!', hint: 'How do real elections do it?' },
             ],
           },
+          {
+            kind: 'counting',
+            heading: 'Round 3 · Count the hands',
+            intro: 'One last vote — movie night! Hands up, and Izzy counts.',
+            items: [
+              {
+                id: 'c1',
+                prompt: 'How many hands went up for the superhero movie?',
+                groups: [{ emoji: '✋', count: 4 }],
+                answer: 4,
+                options: [3, 4, 5, 6],
+                hint: 'Count each hand one at a time.',
+                explanation: 'Four hands for the superhero movie!',
+              },
+              {
+                id: 'c2',
+                prompt: 'The dinosaur movie got 2 kid votes and 1 grown-up vote. How many votes in all?',
+                groups: [
+                  { emoji: '✋', count: 2, label: 'Kids' },
+                  { emoji: '✋', count: 1, label: 'Grown-ups' },
+                ],
+                answer: 3,
+                options: [2, 3, 4, 5],
+                hint: 'Count the kids’ hands, then one more.',
+                explanation: '2 + 1 = 3 votes for dinosaurs. Rawr!',
+              },
+              {
+                id: 'c3',
+                prompt: 'Drink vote! How many cups mark the juice row on Izzy’s chart?',
+                groups: [{ emoji: '🥤', count: 6 }],
+                answer: 6,
+                options: [5, 6, 7, 8],
+                hint: 'One cup for each vote — count the cups.',
+                explanation: 'Six cups means six juice votes!',
+              },
+              {
+                id: 'c4',
+                prompt: 'Izzy let the cousins vote too! Comedy got 5 votes and the space movie got 4. How many votes in all?',
+                groups: [
+                  { emoji: '🎬', count: 5, label: 'Comedy' },
+                  { emoji: '🚀', count: 4, label: 'Space movie' },
+                ],
+                answer: 9,
+                options: [7, 8, 9, 10],
+                hint: 'Start at 5 and count 4 more.',
+                explanation: '5 + 4 = 9 votes — what a crowd!',
+              },
+            ],
+          },
         ],
-      } satisfies QuizMissionParams,
+      } satisfies MixedMissionParams,
     },
     2: {
       wrapper: [
         { text: 'Izzy. The redesign survey went to the whole street — 40 responses! Now: real data analysis.' },
-        { text: 'Round 1: percentages and charts. Round 2: asking good questions.' },
+        { text: 'Round 1: percentages and charts. Round 2: asking good questions. Round 3: survey word problems.' },
       ],
       pattern: 'quiz',
       params: {
         rounds: [
           {
+            kind: 'quiz',
             heading: 'Round 1 · The numbers',
             intro: '40 neighbours answered: Reading nook 16, Game zone 12, Plant corner 8, Mini gym 4.',
             questions: [
@@ -635,6 +1122,7 @@ export const CH10_M3_SURVEY: Mission = {
             ],
           },
           {
+            kind: 'quiz',
             heading: 'Round 2 · Survey design',
             intro: 'The data is only as good as the questions.',
             questions: [
@@ -645,18 +1133,62 @@ export const CH10_M3_SURVEY: Mission = {
               { id: 'q5', question: 'Survey says 70% want quiet spaces; my brother LOUDLY disagrees. The data…', options: ['Is wrong because he’s loud', 'Still stands — one loud voice isn’t a majority', 'Must be redone', 'Should exclude him'], correctIndex: 1, explanation: 'Volume ≠ votes. (We’ll build Owen a small loud corner.)', hint: 'How many is he?' },
             ],
           },
+          {
+            kind: 'word-problem',
+            heading: 'Round 3 · Crunch the results',
+            intro: 'Izzy slides the tally sheets across the table. Work each answer out and type it.',
+            items: [
+              {
+                id: 'w1',
+                visual: '🌿📊',
+                problem: 'The plant corner got 8 of the 40 votes. What percent of the votes is that?',
+                answer: 20,
+                unit: '%',
+                hint: 'Part ÷ whole, then × 100.',
+                explanation: '8 ÷ 40 = 0.2, which is 20%.',
+              },
+              {
+                id: 'w2',
+                visual: '📚🏋️',
+                problem: 'The reading nook got 16 votes and the mini gym got 4. How many MORE votes did the reading nook get?',
+                answer: 12,
+                unit: 'votes',
+                hint: 'Subtract the smaller count from the bigger one.',
+                explanation: '16 − 4 = 12 more votes for cozy reading.',
+              },
+              {
+                id: 'w3',
+                visual: '🖊️📋',
+                problem: 'Izzy marks votes in tally groups of 5. She has 6 full groups and 3 extra marks. How many votes is that?',
+                answer: 33,
+                unit: 'votes',
+                hint: 'Multiply the full groups by 5 first, then add the extras.',
+                explanation: '6 × 5 = 30, plus 3 extras = 33 votes.',
+              },
+              {
+                id: 'w4',
+                visual: '🍿🍎',
+                problem: 'The snack question got 40 answers: 25 chose popcorn and the rest chose fruit. How many chose fruit?',
+                answer: 15,
+                unit: 'votes',
+                hint: 'Everyone answered — take the popcorn votes away from 40.',
+                explanation: '40 − 25 = 15 fruit fans.',
+              },
+            ],
+          },
         ],
-      } satisfies QuizMissionParams,
+      } satisfies MixedMissionParams,
     },
     3: {
       wrapper: [
         { text: 'Izzy. Publishing the survey in Tessa’s paper means defending the methodology. Bring statistics.' },
-        { text: 'Round 1: deeper analysis. Round 2: methodology defence.' },
+        { text: 'Round 1: deeper analysis. Round 2: methodology defence. Round 3: compute the statistics yourself.' },
       ],
       pattern: 'quiz',
       params: {
         rounds: [
           {
+            kind: 'quiz',
             heading: 'Round 1 · Deeper analysis',
             intro: 'Same data, sharper tools. (40 responses; ages 6–78.)',
             questions: [
@@ -668,6 +1200,7 @@ export const CH10_M3_SURVEY: Mission = {
             ],
           },
           {
+            kind: 'quiz',
             heading: 'Round 2 · Defend the methodology',
             intro: 'The editor (Tessa) interrogates. Answer well.',
             questions: [
@@ -678,8 +1211,51 @@ export const CH10_M3_SURVEY: Mission = {
               { id: 'q5', question: 'The strongest line in my methods section is…', options: ['“Trust me”', '“Here’s exactly what I asked, who answered, and what I can’t conclude”', '“The data speaks for itself”', '“Statistics prove it”'], correctIndex: 1, explanation: 'Transparent limits ARE credibility — readers trust work that shows its boundaries.', hint: 'Science is honest about its edges.' },
             ],
           },
+          {
+            kind: 'word-problem',
+            heading: 'Round 3 · The statistics desk',
+            intro: 'Before Tessa prints anything, every number gets recomputed by hand. Your turn.',
+            items: [
+              {
+                id: 'w1',
+                visual: '🧒📊',
+                problem: 'Of the 40 responses, 22 came from adults and the rest from kids. What percent of responses came from kids?',
+                answer: 45,
+                unit: '%',
+                hint: 'Find the kid count first, then divide by 40 and × 100.',
+                explanation: '40 − 22 = 18 kids; 18 ÷ 40 = 0.45 → 45%.',
+              },
+              {
+                id: 'w2',
+                visual: '🏘️📈',
+                problem: 'The street has 200 households and 40 responded this year. Next year Izzy wants a 30% response rate. How many responses is that?',
+                answer: 60,
+                unit: 'responses',
+                hint: '30% of 200 — convert the percent to a decimal and multiply.',
+                explanation: '200 × 0.30 = 60 responses.',
+              },
+              {
+                id: 'w3',
+                visual: '🛋️⏱️',
+                problem: 'Five families reported their weekly family-room hours: 6, 8, 10, 7, and 9. What is the mean?',
+                answer: 8,
+                unit: 'hours',
+                hint: 'Add them all, then divide by how many there are.',
+                explanation: '6 + 8 + 10 + 7 + 9 = 40, and 40 ÷ 5 = 8 hours.',
+              },
+              {
+                id: 'w4',
+                visual: '🥧📐',
+                problem: 'On a pie chart of all 40 votes, how many degrees should the game zone’s 12-vote slice get?',
+                answer: 108,
+                unit: 'degrees',
+                hint: 'The whole circle is 360°. Find the fraction 12/40 first.',
+                explanation: '12 ÷ 40 = 0.3, and 0.3 × 360 = 108°.',
+              },
+            ],
+          },
         ],
-      } satisfies QuizMissionParams,
+      } satisfies MixedMissionParams,
     },
   },
 };

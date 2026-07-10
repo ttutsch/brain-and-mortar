@@ -6,6 +6,7 @@ import { MISSIONS, CHAPTER_REPAIRS } from '../src/data/missions';
 import type {
   Mission, Tier, RobotDir,
   QuizRound, DragMatchRound, CodeRobotRound, PathPlannerRound,
+  CountingRound, WordProblemRound, PatternPuzzleRound,
 } from '../src/data/missions';
 
 const problems: string[] = [];
@@ -155,6 +156,60 @@ function checkPath(where: string, round: PathPlannerRound) {
   }
 }
 
+function checkCounting(where: string, round: CountingRound) {
+  if (!round.items?.length) { err(where, 'counting round has no items'); return; }
+  round.items.forEach((item, i) => {
+    const w = `${where} item${i + 1}`;
+    if (!item.prompt?.trim()) err(w, 'empty prompt');
+    if (!item.groups?.length) { err(w, 'no emoji groups'); return; }
+    item.groups.forEach((g, gi) => {
+      if (!g.emoji?.trim()) err(w, `group ${gi} has no emoji`);
+      if (!Number.isInteger(g.count) || g.count < 1) err(w, `group ${gi} count ${g.count} invalid`);
+      if (g.count > 20) warn(w, `group ${gi} shows ${g.count} emoji — hard to count on screen`);
+    });
+    const total = item.groups.reduce((n, g) => n + g.count, 0);
+    if (item.answer > total) err(w, `answer ${item.answer} exceeds the ${total} things shown — uncountable`);
+    if (item.groups.length === 1 && item.answer !== item.groups[0].count)
+      warn(w, `single group of ${item.groups[0].count} but answer is ${item.answer} — check the prompt semantics`);
+    if (!item.options?.length || item.options.length < 2) err(w, `only ${item.options?.length ?? 0} options`);
+    if (!item.options?.includes(item.answer)) err(w, `options [${item.options?.join(',')}] don't include answer ${item.answer}`);
+    const dupes = new Set<number>();
+    item.options?.forEach((o) => { if (dupes.has(o)) warn(w, `duplicate option ${o}`); dupes.add(o); });
+  });
+}
+
+function checkWordProblem(where: string, round: WordProblemRound) {
+  if (!round.items?.length) { err(where, 'word-problem round has no items'); return; }
+  round.items.forEach((item, i) => {
+    const w = `${where} item${i + 1}`;
+    if (!item.problem?.trim()) err(w, 'empty problem text');
+    if (!Number.isFinite(item.answer)) err(w, `answer ${item.answer} is not a finite number`);
+    if (item.tolerance != null && item.tolerance < 0) err(w, `negative tolerance ${item.tolerance}`);
+    const decimals = String(item.answer).split('.')[1]?.length ?? 0;
+    if (decimals > 2) warn(w, `answer ${item.answer} has ${decimals} decimals — awkward to type`);
+    if (!item.hint?.trim()) warn(w, 'no hint — kids get stuck with no nudge');
+  });
+}
+
+function checkPatternPuzzle(where: string, round: PatternPuzzleRound) {
+  if (!round.items?.length) { err(where, 'pattern-puzzle round has no items'); return; }
+  round.items.forEach((item, i) => {
+    const w = `${where} item${i + 1}`;
+    if (!item.sequence?.length || item.sequence.length < 3)
+      err(w, `sequence has only ${item.sequence?.length ?? 0} entries — pattern not inferable`);
+    item.sequence?.forEach((s, si) => { if (!String(s).trim()) err(w, `sequence entry ${si} is empty`); });
+    if (!item.options?.length || item.options.length < 2) err(w, `only ${item.options?.length ?? 0} options`);
+    if (!Number.isInteger(item.correctIndex) || item.correctIndex < 0 || item.correctIndex >= (item.options?.length ?? 0))
+      err(w, `correctIndex ${item.correctIndex} out of range`);
+    const seen = new Set<string>();
+    item.options?.forEach((o) => {
+      const norm = String(o).trim().toLowerCase();
+      if (seen.has(norm)) warn(w, `duplicate option "${o}"`);
+      seen.add(norm);
+    });
+  });
+}
+
 /* ---------- mission walk ---------- */
 
 for (const mission of Object.values(MISSIONS) as Mission[]) {
@@ -166,12 +221,18 @@ for (const mission of Object.values(MISSIONS) as Mission[]) {
     if (!Array.isArray(rounds) || !rounds.length) { err(`${mission.id} T${tier}`, `pattern ${v.pattern} has no rounds`); return; }
     rounds.forEach((round, ri) => {
       roundCount++;
-      const where = `${mission.id} T${tier} r${ri + 1} [${v.pattern}]`;
-      if (v.pattern === 'quiz') checkQuiz(where, round as QuizRound);
-      else if (v.pattern === 'drag-match') checkDragMatch(where, round as DragMatchRound);
-      else if (v.pattern === 'code-robot') checkRobot(where, round as CodeRobotRound);
-      else if (v.pattern === 'path-planner') checkPath(where, round as PathPlannerRound);
-      else err(where, `unknown pattern "${v.pattern}"`);
+      // Rounds may override the mission-level pattern with their own kind
+      // (mixed missions) — audit each round as what it actually plays as.
+      const kind = (round as { kind?: string }).kind ?? v.pattern;
+      const where = `${mission.id} T${tier} r${ri + 1} [${kind}]`;
+      if (kind === 'quiz') checkQuiz(where, round as QuizRound);
+      else if (kind === 'drag-match') checkDragMatch(where, round as DragMatchRound);
+      else if (kind === 'code-robot') checkRobot(where, round as CodeRobotRound);
+      else if (kind === 'path-planner') checkPath(where, round as PathPlannerRound);
+      else if (kind === 'counting') checkCounting(where, round as CountingRound);
+      else if (kind === 'word-problem') checkWordProblem(where, round as WordProblemRound);
+      else if (kind === 'pattern-puzzle') checkPatternPuzzle(where, round as PatternPuzzleRound);
+      else err(where, `unknown round kind "${kind}"`);
     });
   });
 }

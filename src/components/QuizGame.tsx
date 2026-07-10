@@ -70,6 +70,9 @@ export function QuizGame({ params, onSolved }: Props) {
       </div>
 
       <div className="quiz-question-card" key={`${question.id}.${retryNonce}`}>
+        {question.visual && (
+          <div className="quiz-visual" aria-hidden="true">{question.visual}</div>
+        )}
         <p className="quiz-question">{question.question}</p>
 
         <div className="quiz-options">

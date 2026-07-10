@@ -2,15 +2,15 @@ import { useState } from 'react';
 import type { Mission, PlayerProgress, Tier } from '../types';
 import { CHARACTERS } from '../data/characters';
 import type {
-  CodeRobotMissionParams,
   CodeRobotRound,
-  DragMatchMissionParams,
+  CountingRound,
   DragMatchRound,
   MissionRoundMeta,
-  PathPlannerMissionParams,
   PathPlannerRound,
-  QuizMissionParams,
+  PatternPuzzleRound,
   QuizRound,
+  RoundKind,
+  WordProblemRound,
 } from '../data/missions';
 import { COINS_PER_MISSION } from '../data/missions';
 import { applyMissionOutcome, getChapterStatus } from '../lib/missionFlow';
@@ -20,6 +20,9 @@ import { DragMatch } from './DragMatch';
 import { QuizGame } from './QuizGame';
 import { CodeRobot } from './CodeRobot';
 import { PathPlanner } from './PathPlanner';
+import { CountingGame } from './CountingGame';
+import { WordProblem } from './WordProblem';
+import { PatternPuzzle } from './PatternPuzzle';
 
 interface Props {
   mission: Mission;
@@ -59,7 +62,9 @@ export function MissionPlayer({ mission, tier, progress, onFinish, onCancel, red
 
   const isImplemented =
     variant.pattern === 'drag-match' || variant.pattern === 'quiz' ||
-    variant.pattern === 'code-robot' || variant.pattern === 'path-planner';
+    variant.pattern === 'code-robot' || variant.pattern === 'path-planner' ||
+    variant.pattern === 'counting' || variant.pattern === 'word-problem' ||
+    variant.pattern === 'pattern-puzzle';
   if (!isImplemented) {
     return (
       <div className="mission-screen centered-screen">
@@ -72,16 +77,46 @@ export function MissionPlayer({ mission, tier, progress, onFinish, onCancel, red
     );
   }
 
-  // Both implemented patterns share the { rounds: [...] } shape; each round
+  // Every implemented pattern shares the { rounds: [...] } shape; each round
   // carries its own pattern-specific payload plus shared heading/intro meta.
-  const params = variant.params as unknown as
-    DragMatchMissionParams | QuizMissionParams | CodeRobotMissionParams | PathPlannerMissionParams;
+  const params = variant.params as unknown as { rounds: MissionRoundMeta[] };
   const rounds: MissionRoundMeta[] = params.rounds;
   const totalRounds = rounds.length;
 
   const [phase, setPhase] = useState<Phase>({ kind: 'intro' });
   const [wrongAttempts, setWrongAttempts] = useState(0);
   const [stretchDone, setStretchDone] = useState(false);
+
+  /**
+   * Render one round with the right mini-game engine. A round's own `kind`
+   * wins; rounds without one use the tier variant's mission-level pattern —
+   * which is what lets a single mission mix counting, quizzes, and puzzles.
+   */
+  function renderRound(
+    round: MissionRoundMeta,
+    key: number | string,
+    onDone: (stats: { wrongAttempts: number }) => void,
+  ) {
+    const kind: RoundKind = round.kind ?? (variant.pattern as RoundKind);
+    switch (kind) {
+      case 'drag-match': {
+        const r = round as DragMatchRound;
+        return <DragMatch key={key} params={{ pairs: r.pairs, stuckHint: r.stuckHint }} onSolved={onDone} />;
+      }
+      case 'quiz':
+        return <QuizGame key={key} params={{ questions: (round as QuizRound).questions }} onSolved={onDone} />;
+      case 'code-robot':
+        return <CodeRobot key={key} params={round as CodeRobotRound} reducedMotion={reducedMotion} onSolved={onDone} />;
+      case 'path-planner':
+        return <PathPlanner key={key} params={round as PathPlannerRound} onSolved={onDone} />;
+      case 'counting':
+        return <CountingGame key={key} params={{ items: (round as CountingRound).items }} onSolved={onDone} />;
+      case 'word-problem':
+        return <WordProblem key={key} params={{ items: (round as WordProblemRound).items }} onSolved={onDone} />;
+      case 'pattern-puzzle':
+        return <PatternPuzzle key={key} params={{ items: (round as PatternPuzzleRound).items }} onSolved={onDone} />;
+    }
+  }
 
   function finishRound(roundIndex: number, wrongs: number) {
     setWrongAttempts((prev) => prev + wrongs);
@@ -196,34 +231,8 @@ export function MissionPlayer({ mission, tier, progress, onFinish, onCancel, red
         <div className="mission-stage">
           <div className="drag-match-wrapper">
             {round.heading && <h2 className="dm-heading">{round.heading}</h2>}
-            {variant.pattern === 'drag-match' ? (
-              <DragMatch
-                key={phase.roundIndex}
-                params={{
-                  pairs: (round as DragMatchRound).pairs,
-                  stuckHint: (round as DragMatchRound).stuckHint,
-                }}
-                onSolved={({ wrongAttempts: wa }) => finishRound(phase.roundIndex, wa)}
-              />
-            ) : variant.pattern === 'quiz' ? (
-              <QuizGame
-                key={phase.roundIndex}
-                params={{ questions: (round as QuizRound).questions }}
-                onSolved={({ wrongAttempts: wa }) => finishRound(phase.roundIndex, wa)}
-              />
-            ) : variant.pattern === 'code-robot' ? (
-              <CodeRobot
-                key={phase.roundIndex}
-                params={round as CodeRobotRound}
-                reducedMotion={reducedMotion}
-                onSolved={({ wrongAttempts: wa }) => finishRound(phase.roundIndex, wa)}
-              />
-            ) : (
-              <PathPlanner
-                key={phase.roundIndex}
-                params={round as PathPlannerRound}
-                onSolved={({ wrongAttempts: wa }) => finishRound(phase.roundIndex, wa)}
-              />
+            {renderRound(round, phase.roundIndex, ({ wrongAttempts: wa }) =>
+              finishRound(phase.roundIndex, wa),
             )}
           </div>
         </div>
@@ -235,10 +244,15 @@ export function MissionPlayer({ mission, tier, progress, onFinish, onCancel, red
   if (phase.kind === 'stretch') {
     const nextTier = (tier + 1) as Tier;
     const stretchVariant = mission.tiers[nextTier];
-    const stretchParams = stretchVariant.params as unknown as
-      DragMatchMissionParams | QuizMissionParams | CodeRobotMissionParams | PathPlannerMissionParams;
+    const stretchParams = stretchVariant.params as unknown as { rounds: MissionRoundMeta[] };
     const stretchRound = stretchParams.rounds[0];
     const done = () => { setStretchDone(true); setPhase({ kind: 'complete' }); };
+    // The stretch round comes from the next tier's variant, so its fallback
+    // kind is that variant's pattern — not this tier's.
+    const stretchWithKind: MissionRoundMeta = {
+      ...stretchRound,
+      kind: stretchRound.kind ?? (stretchVariant.pattern as RoundKind),
+    };
     return (
       <div className="mission-screen mission-play">
         <header className="mission-topbar">
@@ -254,24 +268,10 @@ export function MissionPlayer({ mission, tier, progress, onFinish, onCancel, red
         </header>
         <div className="mission-stage">
           <div className="drag-match-wrapper">
-            {(stretchRound as MissionRoundMeta).heading && (
-              <h2 className="dm-heading">{(stretchRound as MissionRoundMeta).heading}</h2>
+            {stretchWithKind.heading && (
+              <h2 className="dm-heading">{stretchWithKind.heading}</h2>
             )}
-            {stretchVariant.pattern === 'drag-match' ? (
-              <DragMatch
-                params={{
-                  pairs: (stretchRound as DragMatchRound).pairs,
-                  stuckHint: (stretchRound as DragMatchRound).stuckHint,
-                }}
-                onSolved={done}
-              />
-            ) : stretchVariant.pattern === 'quiz' ? (
-              <QuizGame params={{ questions: (stretchRound as QuizRound).questions }} onSolved={done} />
-            ) : stretchVariant.pattern === 'code-robot' ? (
-              <CodeRobot params={stretchRound as CodeRobotRound} reducedMotion={reducedMotion} onSolved={done} />
-            ) : (
-              <PathPlanner params={stretchRound as PathPlannerRound} onSolved={done} />
-            )}
+            {renderRound(stretchWithKind, 'stretch', done)}
           </div>
         </div>
       </div>

@@ -142,7 +142,11 @@ function ItemCard({
       aria-pressed={selected}
       aria-label={`${pair.item.label}${pair.item.sublabel ? `, ${pair.item.sublabel}` : ''}`}
     >
-      <ShapePlaceholder shape={pair.item.shape ?? 'small-square'} />
+      {pair.item.emoji ? (
+        <span className="dm-emoji" aria-hidden="true">{pair.item.emoji}</span>
+      ) : (
+        <ShapePlaceholder shape={pair.item.shape ?? 'small-square'} />
+      )}
       <span className="dm-card-label">{pair.item.label}</span>
       {pair.item.sublabel && <span className="dm-card-sublabel">{pair.item.sublabel}</span>}
       {placed && <span className="dm-check" aria-hidden="true">✓</span>}

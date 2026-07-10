@@ -9,6 +9,9 @@ export type MissionPattern =
   | 'drag-match'
   | 'path-planner'
   | 'code-robot'
+  | 'counting'
+  | 'word-problem'
+  | 'pattern-puzzle'
   | 'story-choices'
   | 'build-arrange';
 

@@ -2,7 +2,7 @@
 // garage-door + driveway repair so the family car and gear have a real home).
 
 import type { Mission } from '../types';
-import type { DragMatchMissionParams, QuizMissionParams } from './missions';
+import type { MixedMissionParams, QuizMissionParams } from './missions';
 
 /* ============================================================
  * M1 — Sports math · Owen
@@ -18,12 +18,13 @@ export const CH4_M1_SPORTS_MATH: Mission = {
     1: {
       wrapper: [
         { text: 'Owen here! My hockey tournament is this weekend and there’s math EVERYWHERE in hockey.' },
-        { text: 'Round 1: goals and scores. Round 2: time on the clock.' },
+        { text: 'Round 1: goals and scores. Round 2: time on the clock. Round 3: count up the team gear!' },
       ],
       pattern: 'quiz',
       params: {
         rounds: [
           {
+            kind: 'quiz',
             heading: 'Round 1 · Goals and scores',
             intro: 'Help me track the scores!',
             questions: [
@@ -35,6 +36,7 @@ export const CH4_M1_SPORTS_MATH: Mission = {
             ],
           },
           {
+            kind: 'quiz',
             heading: 'Round 2 · Hockey time',
             intro: 'Hockey runs on the clock.',
             questions: [
@@ -45,18 +47,68 @@ export const CH4_M1_SPORTS_MATH: Mission = {
               { id: 'q5', question: 'The Zamboni takes 10 minutes. It started 4 minutes ago. How much longer?', options: ['4 minutes', '6 minutes', '10 minutes', '14 minutes'], correctIndex: 1, explanation: '10 − 4 = 6 more minutes of smooth-ice machine.', hint: 'How far from 4 to 10?' },
             ],
           },
+          {
+            kind: 'counting',
+            heading: 'Round 3 · Count the team gear',
+            intro: 'Coach asked me to double-check the equipment before we load the van. Count with me!',
+            items: [
+              {
+                id: 'c1',
+                prompt: 'How many hockey sticks did Owen pack for the team?',
+                groups: [{ emoji: '🏒', count: 6 }],
+                answer: 6,
+                options: [5, 6, 7, 8],
+                hint: 'Point at each stick as you count it.',
+                explanation: 'Six sticks — the whole line-up is covered!',
+              },
+              {
+                id: 'c2',
+                prompt: 'Owen scored 2 goals in the morning game and 3 in the afternoon. How many goals in all?',
+                groups: [
+                  { emoji: '🥅', count: 2, label: 'Morning goals' },
+                  { emoji: '🥅', count: 3, label: 'Afternoon goals' },
+                ],
+                answer: 5,
+                options: [4, 5, 6, 7],
+                hint: 'Count the morning goals first, then keep counting the afternoon ones.',
+                explanation: '2 + 3 = 5 goals. What a weekend!',
+              },
+              {
+                id: 'c3',
+                prompt: 'How many ice skates are lined up in the locker room?',
+                groups: [{ emoji: '⛸️', count: 8 }],
+                answer: 8,
+                options: [6, 7, 8, 9],
+                hint: 'Count each skate one at a time.',
+                explanation: 'Eight skates, all ready to hit the ice.',
+              },
+              {
+                id: 'c4',
+                prompt: 'Izzy spotted 4 trophies on the top shelf and 2 on the bottom shelf. How many trophies?',
+                groups: [
+                  { emoji: '🏆', count: 4, label: 'Top shelf' },
+                  { emoji: '🏆', count: 2, label: 'Bottom shelf' },
+                ],
+                answer: 6,
+                options: [5, 6, 7, 8],
+                hint: 'Start at 4, then count up 2 more.',
+                explanation: '4 + 2 = 6 shiny trophies!',
+              },
+            ],
+          },
         ],
-      } satisfies QuizMissionParams,
+      } satisfies MixedMissionParams,
     },
     2: {
       wrapper: [
         { text: 'Owen here. Tournament weekend means brackets, stats, and snack-stand budgets.' },
-        { text: 'Round 1: scoring math. Round 2: tournament logistics.' },
+        { text: 'Round 1: scoring math. Round 2: tournament logistics. Round 3: rink-side word problems you solve yourself.' },
       ],
       pattern: 'quiz',
       params: {
         rounds: [
           {
+            kind: 'quiz',
             heading: 'Round 1 · Scoring math',
             intro: 'Goals, assists, and points.',
             questions: [
@@ -68,6 +120,7 @@ export const CH4_M1_SPORTS_MATH: Mission = {
             ],
           },
           {
+            kind: 'quiz',
             heading: 'Round 2 · Tournament logistics',
             intro: 'The math that gets a team through a weekend.',
             questions: [
@@ -78,18 +131,62 @@ export const CH4_M1_SPORTS_MATH: Mission = {
               { id: 'q5', question: 'Each game is 60 minutes + 15 minutes between games. 4 games run back-to-back starting at 9:00. When does game 4 START?', options: ['12:00', '12:45', '12:15', '1:00'], correctIndex: 1, explanation: 'Each cycle is 75 minutes; three full cycles = 225 min = 3 h 45 min. 9:00 + 3:45 = 12:45.', hint: 'Three games + three gaps come before game 4.' },
             ],
           },
+          {
+            kind: 'word-problem',
+            heading: 'Round 3 · Rink-side word problems',
+            intro: 'No answer choices now — work these out and type the number!',
+            items: [
+              {
+                id: 'w1',
+                visual: '🥅🏒',
+                problem: 'Owen’s team played 4 games this weekend and scored 6 goals in each one. How many goals did they score all weekend?',
+                answer: 24,
+                unit: 'goals',
+                hint: 'Four games of six goals — multiply.',
+                explanation: '4 × 6 = 24 goals for the weekend.',
+              },
+              {
+                id: 'w2',
+                visual: '🧤🥅',
+                problem: 'The goalie faced 42 shots over 3 games — the same number in each game. How many shots per game?',
+                answer: 14,
+                unit: 'shots',
+                hint: 'Split 42 into 3 equal groups.',
+                explanation: '42 ÷ 3 = 14 shots every game.',
+              },
+              {
+                id: 'w3',
+                visual: '⏰🏒',
+                problem: 'Warm-up starts at 9:20 and Owen’s game starts at 10:05. How many minutes long is the warm-up?',
+                answer: 45,
+                unit: 'minutes',
+                hint: 'Count up from 9:20 to 10:00 first, then keep going to 10:05.',
+                explanation: '9:20 to 10:00 is 40 minutes, plus 5 more = 45 minutes.',
+              },
+              {
+                id: 'w4',
+                visual: '⏱️⛸️',
+                problem: 'Owen plays 12 minutes of ice time in each of the 3 periods. How many minutes does he play in the whole game?',
+                answer: 36,
+                unit: 'minutes',
+                hint: 'Three periods of 12 minutes — multiply.',
+                explanation: '12 × 3 = 36 minutes on the ice.',
+              },
+            ],
+          },
         ],
-      } satisfies QuizMissionParams,
+      } satisfies MixedMissionParams,
     },
     3: {
       wrapper: [
         { text: 'Owen. Analytics has taken over hockey — shooting percentages, plus/minus, save rates. Let’s do real hockey math.' },
-        { text: 'Round 1: percentages and rates. Round 2: tournament strategy.' },
+        { text: 'Round 1: percentages and rates. Round 2: tournament strategy. Round 3: analytics problems you work out on paper.' },
       ],
       pattern: 'quiz',
       params: {
         rounds: [
           {
+            kind: 'quiz',
             heading: 'Round 1 · Hockey analytics',
             intro: 'The numbers scouts actually use.',
             questions: [
@@ -101,6 +198,7 @@ export const CH4_M1_SPORTS_MATH: Mission = {
             ],
           },
           {
+            kind: 'quiz',
             heading: 'Round 2 · Tournament strategy',
             intro: 'Brackets, standings, and tie-breakers.',
             questions: [
@@ -111,8 +209,52 @@ export const CH4_M1_SPORTS_MATH: Mission = {
               { id: 'q5', question: 'If our win probability per game is 0.6, what’s the chance we win our next two games?', options: ['0.6', '0.36', '1.2', '0.24'], correctIndex: 1, explanation: 'Independent events multiply: 0.6 × 0.6 = 0.36.', hint: 'Two events both happening → multiply.' },
             ],
           },
+          {
+            kind: 'word-problem',
+            heading: 'Round 3 · Analytics on paper',
+            intro: 'Real analytics now — grab paper if you need it, then type each answer.',
+            items: [
+              {
+                id: 'w1',
+                visual: '🏒🥅',
+                problem: 'Owen scored 9 goals on 60 shots this season. What is his shooting percentage?',
+                answer: 15,
+                unit: '%',
+                hint: 'Goals ÷ shots, then × 100.',
+                explanation: '9 ÷ 60 = 0.15 → 15%.',
+              },
+              {
+                id: 'w2',
+                visual: '📋🏒',
+                problem: 'Owen’s goals in his 4 tournament games: 3, 0, 2 and 1. What was his average (mean) number of goals per game?',
+                answer: 1.5,
+                tolerance: 0.01,
+                unit: 'goals',
+                hint: 'Add all four games, then divide by 4.',
+                explanation: '3 + 0 + 2 + 1 = 6, and 6 ÷ 4 = 1.5 goals per game.',
+              },
+              {
+                id: 'w3',
+                visual: '👕💵',
+                problem: 'New team jerseys cost $34.50 each and Mama T orders 12 for the team. What is the total cost?',
+                answer: 414,
+                unit: 'dollars',
+                hint: 'Split it up: 34.50 × 10, plus 34.50 × 2.',
+                explanation: '345 + 69 = $414 for the set.',
+              },
+              {
+                id: 'w4',
+                visual: '🧊🚜',
+                problem: 'The ice-resurfacing machine cleans the 1560 m² rink surface in 12 minutes. How many square metres does it clear per minute?',
+                answer: 130,
+                unit: 'm² per minute',
+                hint: 'Divide the area by the minutes.',
+                explanation: '1560 ÷ 12 = 130 m² every minute.',
+              },
+            ],
+          },
         ],
-      } satisfies QuizMissionParams,
+      } satisfies MixedMissionParams,
     },
   },
 };
@@ -131,12 +273,13 @@ export const CH4_M2_ROAD_TRIP: Mission = {
     1: {
       wrapper: [
         { text: 'Dada T here! Owen’s tournament is in Kingston — road trip!' },
-        { text: 'I planned the route, of course. Help me check the map.' },
+        { text: 'I planned the route, of course. Help me check the map — then play Caleb’s counting game in the last round.' },
       ],
       pattern: 'quiz',
       params: {
         rounds: [
           {
+            kind: 'quiz',
             heading: 'Round 1 · Reading our map',
             intro: 'Map basics for the drive.',
             questions: [
@@ -148,6 +291,7 @@ export const CH4_M2_ROAD_TRIP: Mission = {
             ],
           },
           {
+            kind: 'quiz',
             heading: 'Round 2 · On the road',
             intro: 'Things we see on the drive.',
             questions: [
@@ -158,18 +302,68 @@ export const CH4_M2_ROAD_TRIP: Mission = {
               { id: 'q5', question: 'On the way home the sun sets in front of us. Which direction are we driving?', options: ['North', 'South', 'East', 'West'], correctIndex: 3, explanation: 'The sun sets in the west — and home (Toronto) is west of Kingston!', hint: 'Where does the sun go down?' },
             ],
           },
+          {
+            kind: 'counting',
+            heading: 'Round 3 · Backseat counting games',
+            intro: 'Caleb invented a counting game for the drive. Play along!',
+            items: [
+              {
+                id: 'c1',
+                prompt: 'Caleb is counting red cars. How many red cars has he spotted so far?',
+                groups: [{ emoji: '🚗', count: 7 }],
+                answer: 7,
+                options: [5, 6, 7, 8],
+                hint: 'Point at each car as you count.',
+                explanation: 'Seven red cars — Caleb wins this round!',
+              },
+              {
+                id: 'c2',
+                prompt: 'We passed 3 trucks before the rest stop and 4 trucks after it. How many trucks in all?',
+                groups: [
+                  { emoji: '🚚', count: 3, label: 'Before the stop' },
+                  { emoji: '🚚', count: 4, label: 'After the stop' },
+                ],
+                answer: 7,
+                options: [5, 6, 7, 8],
+                hint: 'Start at 3, then count 4 more.',
+                explanation: '3 + 4 = 7 trucks rumbling along the 401.',
+              },
+              {
+                id: 'c3',
+                prompt: 'How many road signs point the way to Kingston?',
+                groups: [{ emoji: '🪧', count: 5 }],
+                answer: 5,
+                options: [4, 5, 6, 7],
+                hint: 'Count each sign one at a time.',
+                explanation: 'Five signs — we can’t get lost!',
+              },
+              {
+                id: 'c4',
+                prompt: 'Izzy counted boats on Lake Ontario: 2 sailboats and 2 ferries. How many boats altogether?',
+                groups: [
+                  { emoji: '⛵', count: 2, label: 'Sailboats' },
+                  { emoji: '🛳️', count: 2, label: 'Ferries' },
+                ],
+                answer: 4,
+                options: [3, 4, 5, 6],
+                hint: 'Count the sailboats, then keep going with the ferries.',
+                explanation: '2 + 2 = 4 boats out on the lake.',
+              },
+            ],
+          },
         ],
-      } satisfies QuizMissionParams,
+      } satisfies MixedMissionParams,
     },
     2: {
       wrapper: [
         { text: 'Dada T. Kingston tournament — 260 km of prime Ontario geography along Highway 401.' },
-        { text: 'Round 1: the route. Round 2: Kingston and the region.' },
+        { text: 'Round 1: the route. Round 2: Kingston and the region. Round 3: road-trip math with real trip numbers.' },
       ],
       pattern: 'quiz',
       params: {
         rounds: [
           {
+            kind: 'quiz',
             heading: 'Round 1 · The route east',
             intro: 'Toronto → Kingston, stop by stop.',
             questions: [
@@ -181,6 +375,7 @@ export const CH4_M2_ROAD_TRIP: Mission = {
             ],
           },
           {
+            kind: 'quiz',
             heading: 'Round 2 · Kingston up close',
             intro: 'Our destination has serious history.',
             questions: [
@@ -191,18 +386,62 @@ export const CH4_M2_ROAD_TRIP: Mission = {
               { id: 'q5', question: 'Crossing the St. Lawrence east of Kingston, you could walk to which country?', options: ['France', 'The United States', 'Mexico', 'Greenland'], correctIndex: 1, explanation: 'The river forms the Canada–US border there — New York State is on the far bank.', hint: 'Which country borders Ontario to the south?' },
             ],
           },
+          {
+            kind: 'word-problem',
+            heading: 'Round 3 · Road-trip math',
+            intro: 'Dada T reads out the trip numbers — you do the math and type each answer.',
+            items: [
+              {
+                id: 'w1',
+                visual: '🚗🛣️',
+                problem: 'Toronto to Kingston is 260 km. We’ve driven 140 km so far. How many kilometres are left?',
+                answer: 120,
+                unit: 'km',
+                hint: 'Take what we’ve already driven away from the whole trip.',
+                explanation: '260 − 140 = 120 km to go.',
+              },
+              {
+                id: 'w2',
+                visual: '🚗💨',
+                problem: 'On the 401 we drive 100 km every hour. How far do we travel in 2 hours?',
+                answer: 200,
+                unit: 'km',
+                hint: '100 km each hour, for two hours — multiply.',
+                explanation: '100 × 2 = 200 km down the highway.',
+              },
+              {
+                id: 'w3',
+                visual: '⛽🚗',
+                problem: 'The gas tank holds 60 litres and the gauge shows it’s exactly half full. How many litres will it take to fill it up?',
+                answer: 30,
+                unit: 'L',
+                hint: 'Half the tank is empty — what’s half of 60?',
+                explanation: 'Half of 60 is 30, so 30 L tops it up.',
+              },
+              {
+                id: 'w4',
+                visual: '⛽🧮',
+                problem: 'Our van uses 8 litres of gas for every 100 km. The whole trip is 300 km. How many litres will we use?',
+                answer: 24,
+                unit: 'L',
+                hint: 'How many 100s fit in 300? Then multiply by 8.',
+                explanation: '300 km is three 100s: 3 × 8 = 24 L.',
+              },
+            ],
+          },
         ],
-      } satisfies QuizMissionParams,
+      } satisfies MixedMissionParams,
     },
     3: {
       wrapper: [
         { text: 'Dada T. A 260 km drive is a geography seminar if you pay attention. Let’s pay attention.' },
-        { text: 'Round 1: physical geography of the corridor. Round 2: how geography shapes settlement.' },
+        { text: 'Round 1: physical geography of the corridor. Round 2: how geography shapes settlement. Round 3: calculations from our own trip.' },
       ],
       pattern: 'quiz',
       params: {
         rounds: [
           {
+            kind: 'quiz',
             heading: 'Round 1 · The lakeshore corridor',
             intro: 'Physical geography between Toronto and Kingston.',
             questions: [
@@ -214,6 +453,7 @@ export const CH4_M2_ROAD_TRIP: Mission = {
             ],
           },
           {
+            kind: 'quiz',
             heading: 'Round 2 · Geography shapes settlement',
             intro: 'Why cities are where they are.',
             questions: [
@@ -224,8 +464,52 @@ export const CH4_M2_ROAD_TRIP: Mission = {
               { id: 'q5', question: 'A "natural harbour" like Kingston’s matters historically because…', options: ['It looks nice', 'Ships could shelter and load safely without building much', 'Fish prefer them', 'They never freeze'], correctIndex: 1, explanation: 'Sheltered deep water = safe anchorage = trade and naval power, long before modern construction.', hint: 'What does a ship need from a coastline?' },
             ],
           },
+          {
+            kind: 'word-problem',
+            heading: 'Round 3 · Corridor calculations',
+            intro: 'Geography runs on numbers too. Work these out from our actual trip.',
+            items: [
+              {
+                id: 'w1',
+                visual: '🚗📈',
+                problem: 'The 260 km drive to Kingston took us exactly 2.5 hours. What was our average speed?',
+                answer: 104,
+                unit: 'km/h',
+                hint: 'Speed = distance ÷ time.',
+                explanation: '260 ÷ 2.5 = 104 km/h on average.',
+              },
+              {
+                id: 'w2',
+                visual: '⛽💵',
+                problem: 'Gas costs $1.60 per litre and Dada T pumps 45 litres. What does the fill-up cost?',
+                answer: 72,
+                unit: 'dollars',
+                hint: 'Price per litre × number of litres.',
+                explanation: '1.60 × 45 = $72.',
+              },
+              {
+                id: 'w3',
+                visual: '🗺️🚗',
+                problem: 'We’ve covered 195 km of the 260 km trip. What percent of the trip is done?',
+                answer: 75,
+                unit: '%',
+                hint: 'Part ÷ whole, then × 100.',
+                explanation: '195 ÷ 260 = 0.75 → 75% done.',
+              },
+              {
+                id: 'w4',
+                visual: '⛽📊',
+                problem: 'The van used 19.5 litres of fuel over the whole 260 km trip. How many litres per 100 km is that?',
+                answer: 7.5,
+                tolerance: 0.01,
+                unit: 'L/100 km',
+                hint: 'Litres ÷ kilometres, then × 100.',
+                explanation: '19.5 ÷ 260 = 0.075 L per km → 7.5 L per 100 km.',
+              },
+            ],
+          },
         ],
-      } satisfies QuizMissionParams,
+      } satisfies MixedMissionParams,
     },
   },
 };
@@ -244,12 +528,13 @@ export const CH4_M3_STATS: Mission = {
     1: {
       wrapper: [
         { text: 'Tessa here — I’m running the scoreboard table at Owen’s tournament.' },
-        { text: 'Help me read the score sheets. Round 1: counting and comparing. Round 2: tally charts.' },
+        { text: 'Help me read the score sheets. Round 1: counting and comparing. Round 2: tally charts. Round 3: counting for the score sheet.' },
       ],
       pattern: 'drag-match',
       params: {
         rounds: [
           {
+            kind: 'drag-match',
             heading: 'Round 1 · Score sheet reading',
             intro: 'Match each question to its answer from the sheet:\nGame 1: Us 3 – Them 2 · Game 2: Us 1 – Them 4 · Game 3: Us 5 – Them 5',
             pairs: [
@@ -262,6 +547,7 @@ export const CH4_M3_STATS: Mission = {
             stuckHint: 'Win = our number is bigger. Lose = theirs is bigger. Tie = same.',
           },
           {
+            kind: 'drag-match',
             heading: 'Round 2 · Tally it up',
             intro: 'I kept tallies. Match each tally to its number. (Remember: 𝍸 = 5)',
             pairs: [
@@ -273,18 +559,68 @@ export const CH4_M3_STATS: Mission = {
             ],
             stuckHint: 'Count in fives for each bundle, then add the single lines.',
           },
+          {
+            kind: 'counting',
+            heading: 'Round 3 · Count it for the score sheet',
+            intro: 'Last job at the table — count everything so my sheet is perfect.',
+            items: [
+              {
+                id: 'c1',
+                prompt: 'Tessa gives out a star sticker for every goal. How many stickers has she handed out?',
+                groups: [{ emoji: '⭐', count: 8 }],
+                answer: 8,
+                options: [6, 7, 8, 9],
+                hint: 'Point at each star as you count it.',
+                explanation: 'Eight stars for eight goals!',
+              },
+              {
+                id: 'c2',
+                prompt: 'We scored 3 goals in Game 1 and 2 goals in Game 2. How many goals on the score sheet?',
+                groups: [
+                  { emoji: '🥅', count: 3, label: 'Game 1' },
+                  { emoji: '🥅', count: 2, label: 'Game 2' },
+                ],
+                answer: 5,
+                options: [4, 5, 6, 7],
+                hint: 'Count Game 1 first, then keep counting Game 2.',
+                explanation: '3 + 2 = 5 goals in total.',
+              },
+              {
+                id: 'c3',
+                prompt: 'Tessa sharpened pencils for the scorers’ table. How many pencils?',
+                groups: [{ emoji: '✏️', count: 6 }],
+                answer: 6,
+                options: [5, 6, 7, 8],
+                hint: 'Count each pencil one at a time.',
+                explanation: 'Six sharp pencils — ready to keep score.',
+              },
+              {
+                id: 'c4',
+                prompt: 'The medal box has 4 medals for the winners and 4 for the runners-up. How many medals?',
+                groups: [
+                  { emoji: '🏅', count: 4, label: 'Winners' },
+                  { emoji: '🏅', count: 4, label: 'Runners-up' },
+                ],
+                answer: 8,
+                options: [6, 7, 8, 9],
+                hint: 'Start at 4, then count 4 more.',
+                explanation: '4 + 4 = 8 medals to hand out.',
+              },
+            ],
+          },
         ],
-      } satisfies DragMatchMissionParams,
+      } satisfies MixedMissionParams,
     },
     2: {
       wrapper: [
         { text: 'Tessa. The tournament publishes stat sheets and I’m the only one at the table who can read them. Join me.' },
-        { text: 'Round 1: averages and totals. Round 2: reading the standings table.' },
+        { text: 'Round 1: averages and totals. Round 2: reading the standings table. Round 3: filling the gaps in the stat sheet.' },
       ],
       pattern: 'quiz',
       params: {
         rounds: [
           {
+            kind: 'quiz',
             heading: 'Round 1 · Averages',
             intro: 'Mean, max, and range from real score data.',
             questions: [
@@ -296,6 +632,7 @@ export const CH4_M3_STATS: Mission = {
             ],
           },
           {
+            kind: 'quiz',
             heading: 'Round 2 · The standings table',
             intro: 'Standings: Hawks 10 pts · Wolves 8 pts · Bears 8 pts · Owls 4 pts.\nGoal diff: Wolves +6, Bears +2.',
             questions: [
@@ -306,18 +643,62 @@ export const CH4_M3_STATS: Mission = {
               { id: 'q5', question: 'Bears beat Hawks in the final round (win = 2 pts). New totals: Bears 10, Hawks 10. Who finishes ahead if Bears’ goal diff is now better?', options: ['Hawks — they led before', 'Bears — tie-breaker', 'Coin flip', 'Both get the trophy'], correctIndex: 1, explanation: 'Equal points → goal difference decides → Bears take it.', hint: 'Same rule as Q2.' },
             ],
           },
+          {
+            kind: 'word-problem',
+            heading: 'Round 3 · Stat-sheet word problems',
+            intro: 'The stat sheet has gaps. Calculate each missing number and type it in.',
+            items: [
+              {
+                id: 'w1',
+                visual: '🥅📋',
+                problem: 'The Hawks scored 4 goals in each of their 6 games. How many goals did they score in total?',
+                answer: 24,
+                unit: 'goals',
+                hint: 'Six games of four goals — multiply.',
+                explanation: '4 × 6 = 24 goals for the Hawks.',
+              },
+              {
+                id: 'w2',
+                visual: '🏒🎯',
+                problem: 'Owen’s team took 96 shots over 8 games — the same number in every game. How many shots per game?',
+                answer: 12,
+                unit: 'shots',
+                hint: 'Split 96 into 8 equal groups.',
+                explanation: '96 ÷ 8 = 12 shots each game.',
+              },
+              {
+                id: 'w3',
+                visual: '🧑‍🤝‍🧑🏟️',
+                problem: '68 people watched Game 1 and 47 watched Game 2. How many spectators is that in all?',
+                answer: 115,
+                unit: 'people',
+                hint: 'Add the two crowds — watch the carry!',
+                explanation: '68 + 47 = 115 spectators.',
+              },
+              {
+                id: 'w4',
+                visual: '📄📦',
+                problem: 'Scorecards come in packs of 25. Tessa handed out 4 full packs during the weekend. How many scorecards?',
+                answer: 100,
+                unit: 'scorecards',
+                hint: 'Count by 25s: 25, 50, 75…',
+                explanation: '4 × 25 = 100 scorecards.',
+              },
+            ],
+          },
         ],
-      } satisfies QuizMissionParams,
+      } satisfies MixedMissionParams,
     },
     3: {
       wrapper: [
         { text: 'Tessa. I’m turning the tournament stats into charts for the team newsletter — data literacy time.' },
-        { text: 'Round 1: statistics that summarize. Round 2: spotting misleading data.' },
+        { text: 'Round 1: statistics that summarize. Round 2: spotting misleading data. Round 3: crunching the newsletter numbers yourself.' },
       ],
       pattern: 'quiz',
       params: {
         rounds: [
           {
+            kind: 'quiz',
             heading: 'Round 1 · Summarizing data',
             intro: 'Mean vs median vs mode — and when each one lies.',
             questions: [
@@ -329,6 +710,7 @@ export const CH4_M3_STATS: Mission = {
             ],
           },
           {
+            kind: 'quiz',
             heading: 'Round 2 · Misleading charts',
             intro: 'The newsletter must not lie. Spot the spin.',
             questions: [
@@ -339,8 +721,52 @@ export const CH4_M3_STATS: Mission = {
               { id: 'q5', question: 'Sample-size trap: a goalie has a perfect record — 1 game. The honest move is…', options: ['Declare them the league’s best', 'Report the record alongside the games played', 'Hide the stat', 'Extrapolate to 100 wins'], correctIndex: 1, explanation: 'Tiny samples mislead. Context — n=1 — lets readers weigh it properly.', hint: 'How many games back the claim?' },
             ],
           },
+          {
+            kind: 'word-problem',
+            heading: 'Round 3 · Newsletter number-crunching',
+            intro: 'The newsletter charts need real numbers. Compute each one yourself.',
+            items: [
+              {
+                id: 'w1',
+                visual: '⏱️📊',
+                problem: 'Owen’s five shifts lasted 5, 7, 6, 4 and 8 minutes. What was his mean shift length?',
+                answer: 6,
+                unit: 'minutes',
+                hint: 'Add the five shifts, then divide by 5.',
+                explanation: '5 + 7 + 6 + 4 + 8 = 30, and 30 ÷ 5 = 6 minutes.',
+              },
+              {
+                id: 'w2',
+                visual: '🏟️🧑‍🤝‍🧑',
+                problem: 'Five games drew 40, 55, 62, 48 and 70 fans. What was the average attendance?',
+                answer: 55,
+                unit: 'fans',
+                hint: 'Total the crowds first, then divide by the number of games.',
+                explanation: 'The total is 275; 275 ÷ 5 = 55 fans per game.',
+              },
+              {
+                id: 'w3',
+                visual: '🧤🥅',
+                problem: 'The goalie allowed 6 goals across 4 games. What was her average number of goals allowed per game?',
+                answer: 1.5,
+                tolerance: 0.01,
+                unit: 'goals per game',
+                hint: 'Goals allowed ÷ games played.',
+                explanation: '6 ÷ 4 = 1.5 — a solid goals-against average.',
+              },
+              {
+                id: 'w4',
+                visual: '🏒📈',
+                problem: 'The team took 250 shots this season and scored on 30 of them. What percent of shots became goals?',
+                answer: 12,
+                unit: '%',
+                hint: 'Part ÷ whole, then × 100.',
+                explanation: '30 ÷ 250 = 0.12 → a 12% shooting percentage.',
+              },
+            ],
+          },
         ],
-      } satisfies QuizMissionParams,
+      } satisfies MixedMissionParams,
     },
   },
 };
@@ -368,21 +794,21 @@ export const CH4_M4_HISTORY: Mission = {
             heading: 'Round 1 · Then and now',
             intro: 'Old hockey vs. today’s hockey.',
             questions: [
-              { id: 'q1', question: 'Long ago, kids played hockey on…', options: ['Frozen ponds and rivers', 'Video screens', 'Trampolines', 'Sand'], correctIndex: 0, explanation: 'Before indoor rinks, winter ice on ponds WAS the rink.', hint: 'Where does ice come from in winter?' },
+              { id: 'q1', question: 'Long ago, kids played hockey on…', options: ['Frozen ponds and rivers', 'Video screens', 'Trampolines', 'Sand'], correctIndex: 0, explanation: 'Before indoor rinks, winter ice on ponds WAS the rink.', hint: 'Where does ice come from in winter?', visual: '👦🏒' },
               { id: 'q2', question: 'Very old hockey players didn’t wear…', options: ['Skates', 'Helmets', 'Sweaters', 'Mittens'], correctIndex: 1, explanation: 'Helmets only became required decades later. Safety has come a long way!', hint: 'What keeps your head safe?' },
               { id: 'q3', question: 'The oldest hockey sticks were made of…', options: ['Plastic', 'Metal', 'One piece of wood', 'Glass'], correctIndex: 2, explanation: 'Early sticks were carved from a single piece of wood.', hint: 'What grows on trees?' },
               { id: 'q4', question: 'A "trophy" is…', options: ['A prize you win', 'A type of skate', 'A penalty', 'A snack'], correctIndex: 0, explanation: 'Teams win trophies — like the famous Stanley Cup!', hint: 'What’s in the case we visited?' },
-              { id: 'q5', question: 'Old photos in the trophy case are in black and white because…', options: ['The past had no colours', 'Old cameras couldn’t capture colour', 'Someone erased the colour', 'Hockey is black and white'], correctIndex: 1, explanation: 'Colour photography came later — the world was just as colourful, the cameras weren’t!', hint: 'Was the world grey, or just the photo?' },
+              { id: 'q5', question: 'Old photos in the trophy case are in black and white because…', options: ['The past had no colours', 'Old cameras couldn’t capture colour', 'Someone erased the colour', 'Hockey is black and white'], correctIndex: 1, explanation: 'Colour photography came later — the world was just as colourful, the cameras weren’t!', hint: 'Was the world grey, or just the photo?', visual: '📷🖼️' },
             ],
           },
           {
             heading: 'Round 2 · Winter in Canada',
             intro: 'How Canadians have always enjoyed winter.',
             questions: [
-              { id: 'q1', question: 'Which winter activity is oldest in Canada?', options: ['Snowmobiling', 'Snowshoeing', 'Ice-resurfacing machines', 'Hot-tubbing'], correctIndex: 1, explanation: 'Indigenous peoples invented and used snowshoes for thousands of years before anything with a motor.', hint: 'Which one needs no machines at all?' },
+              { id: 'q1', question: 'Which winter activity is oldest in Canada?', options: ['Snowmobiling', 'Snowshoeing', 'Ice-resurfacing machines', 'Hot-tubbing'], correctIndex: 1, explanation: 'Indigenous peoples invented and used snowshoes for thousands of years before anything with a motor.', hint: 'Which one needs no machines at all?', visual: '🍁❄️' },
               { id: 'q2', question: 'Tobogganing means…', options: ['Sledding down a snowy hill', 'A type of soup', 'Ice fishing', 'Winter dancing'], correctIndex: 0, explanation: 'The toboggan — a flat-bottomed snow sled — comes from Indigenous designs too.', hint: 'You need a hill and a "wheee!"' },
-              { id: 'q3', question: 'A rink’s ice is kept smooth by…', options: ['A Zamboni machine', 'Hair dryers', 'Warm blankets', 'Wishing'], correctIndex: 0, explanation: 'The ice-resurfacing machine (Zamboni is the famous brand) shaves and re-waters the ice.', hint: 'We watched it between periods!' },
-              { id: 'q4', question: 'Maple syrup — a Canadian winter-to-spring tradition — comes from…', options: ['A factory only', 'Maple tree sap', 'Melted snow', 'Bees'], correctIndex: 1, explanation: 'Sap is collected from maple trees and boiled down. First Nations peoples taught settlers how.', hint: 'Which tree is on our flag?' },
+              { id: 'q3', question: 'A rink’s ice is kept smooth by…', options: ['A Zamboni machine', 'Hair dryers', 'Warm blankets', 'Wishing'], correctIndex: 0, explanation: 'The ice-resurfacing machine (Zamboni is the famous brand) shaves and re-waters the ice.', hint: 'We watched it between periods!', visual: '⛸️✨' },
+              { id: 'q4', question: 'Maple syrup — a Canadian winter-to-spring tradition — comes from…', options: ['A factory only', 'Maple tree sap', 'Melted snow', 'Bees'], correctIndex: 1, explanation: 'Sap is collected from maple trees and boiled down. First Nations peoples taught settlers how.', hint: 'Which tree is on our flag?', visual: '🥞' },
               { id: 'q5', question: 'Why do many Canadian towns have outdoor community rinks?', options: ['Winters are long and cold enough to keep ice frozen', 'A law requires them', 'They double as pools in July', 'For Zamboni parking'], correctIndex: 0, explanation: 'Cold winters make outdoor ice cheap and natural — skating became part of community life.', hint: 'What does ice need to stay solid?' },
             ],
           },
@@ -392,35 +818,80 @@ export const CH4_M4_HISTORY: Mission = {
     2: {
       wrapper: [
         { text: 'Owen. The arena lobby has a little hockey-history museum. I read EVERYTHING.' },
-        { text: 'Round 1: how hockey grew up in Canada. Round 2: thinking like a historian.' },
+        { text: 'Round 1: how hockey grew up in Canada. Round 2: thinking like a historian. Round 3: timeline patterns from the museum wall.' },
       ],
       pattern: 'quiz',
       params: {
         rounds: [
           {
+            kind: 'quiz',
             heading: 'Round 1 · How hockey grew up',
             intro: 'From frozen ponds to packed arenas.',
             questions: [
-              { id: 'q1', question: 'The first organized indoor hockey game was played in 1875 in…', options: ['Toronto', 'Montreal', 'Kingston', 'Boston'], correctIndex: 1, explanation: 'Montreal’s Victoria Skating Rink hosted the first recorded indoor game.', hint: 'A large Quebec city.' },
-              { id: 'q2', question: 'The Stanley Cup is named after…', options: ['A hockey player', 'A Governor General of Canada', 'A city', 'A brand of skates'], correctIndex: 1, explanation: 'Lord Stanley of Preston, Governor General, donated the cup in 1892.', hint: 'A vice-regal title is involved.' },
+              { id: 'q1', question: 'The first organized indoor hockey game was played in 1875 in…', options: ['Toronto', 'Montreal', 'Kingston', 'Boston'], correctIndex: 1, explanation: 'Montreal’s Victoria Skating Rink hosted the first recorded indoor game.', hint: 'A large Quebec city.', visual: '🏟️⛸️' },
+              { id: 'q2', question: 'The Stanley Cup is named after…', options: ['A hockey player', 'A Governor General of Canada', 'A city', 'A brand of skates'], correctIndex: 1, explanation: 'Lord Stanley of Preston, Governor General, donated the cup in 1892.', hint: 'A vice-regal title is involved.', visual: '🏆' },
               { id: 'q3', question: 'Hockey’s roots include stick-and-ball games played by…', options: ['Only the English', 'Indigenous peoples and European settlers both', 'Robots', 'Vikings exclusively'], correctIndex: 1, explanation: 'Indigenous games like the Mi’kmaq’s contributed to hockey’s development alongside European games — the modern sport blends many roots.', hint: 'More than one tradition fed in.' },
-              { id: 'q4', question: 'Early pucks were sometimes made from…', options: ['Frozen rubber balls cut flat', 'Solid gold', 'Ice cubes', 'Maple syrup tins only'], correctIndex: 0, explanation: 'Rubber balls bounced too much — players cut them flat, and the puck was born.', hint: 'What shape problem does a ball have on ice?' },
+              { id: 'q4', question: 'Early pucks were sometimes made from…', options: ['Frozen rubber balls cut flat', 'Solid gold', 'Ice cubes', 'Maple syrup tins only'], correctIndex: 0, explanation: 'Rubber balls bounced too much — players cut them flat, and the puck was born.', hint: 'What shape problem does a ball have on ice?', visual: '🏒❄️' },
               { id: 'q5', question: 'Women’s hockey in Canada dates back to…', options: ['The 2000s', 'The 1990s', 'The 1890s', 'It started outside Canada'], correctIndex: 2, explanation: 'Women were playing organized hockey in Canada by the 1890s — including a famous photo of Lord Stanley’s own daughter Isobel playing.', hint: 'Much earlier than most people guess.' },
             ],
           },
           {
+            kind: 'quiz',
             heading: 'Round 2 · Think like a historian',
             intro: 'The museum’s artifacts teach us HOW we know what we know.',
             questions: [
               { id: 'q1', question: 'A primary source about the 1875 Montreal game would be…', options: ['A newspaper report printed that week', 'A 2020 documentary', 'My history textbook', 'A guess'], correctIndex: 0, explanation: 'Primary sources come from the time of the event — that week’s newspaper qualifies.', hint: '"Primary" = closest to the moment.' },
               { id: 'q2', question: 'A wooden stick in the case is labelled "circa 1900." Circa means…', options: ['Exactly', 'Approximately', 'Before', 'After'], correctIndex: 1, explanation: 'Circa (c.) = "around" — historians flag uncertainty honestly.', hint: 'It’s a Latin word about closeness.' },
-              { id: 'q3', question: 'Two old newspapers report different winners for the same 1903 game. A good historian would…', options: ['Trust the longer article', 'Look for more sources to cross-check', 'Flip a coin', 'Conclude the game never happened'], correctIndex: 1, explanation: 'Conflicting sources call for corroboration — find league records, other papers, photos.', hint: 'More evidence, not better fonts.' },
-              { id: 'q4', question: 'An artifact’s "provenance" is…', options: ['Its price', 'The history of where it came from and who owned it', 'Its province', 'Its weight'], correctIndex: 1, explanation: 'Provenance traces an object’s chain of custody — it’s how museums trust an item is genuine.', hint: 'It answers "how did this get here?"' },
+              { id: 'q3', question: 'Two old newspapers report different winners for the same 1903 game. A good historian would…', options: ['Trust the longer article', 'Look for more sources to cross-check', 'Flip a coin', 'Conclude the game never happened'], correctIndex: 1, explanation: 'Conflicting sources call for corroboration — find league records, other papers, photos.', hint: 'More evidence, not better fonts.', visual: '📰📰' },
+              { id: 'q4', question: 'An artifact’s "provenance" is…', options: ['Its price', 'The history of where it came from and who owned it', 'Its province', 'Its weight'], correctIndex: 1, explanation: 'Provenance traces an object’s chain of custody — it’s how museums trust an item is genuine.', hint: 'It answers "how did this get here?"', visual: '🏛️' },
               { id: 'q5', question: 'The museum says early games "reportedly" drew 100 spectators. "Reportedly" signals…', options: ['Absolute certainty', 'The claim comes from accounts that can’t be fully verified', 'Exactly 100 people', 'A lie'], correctIndex: 1, explanation: 'Careful word choice marks the difference between verified facts and period claims.', hint: 'Why not just say "drew 100"?' },
             ],
           },
+          {
+            kind: 'pattern-puzzle',
+            heading: 'Round 3 · Timeline patterns',
+            intro: 'The museum timeline is missing some year labels. Spot each pattern and pick what comes next.',
+            items: [
+              {
+                id: 'p1',
+                prompt: 'The display cases step forward the same number of years each time. Which year comes next?',
+                sequence: ['1875', '1885', '1895'],
+                options: ['1900', '1905', '1910', '1925'],
+                correctIndex: 1,
+                hint: 'How many years between 1875 and 1885?',
+                explanation: 'The years climb by 10, so 1895 + 10 = 1905.',
+              },
+              {
+                id: 'p2',
+                prompt: 'The jersey wall keeps the same jump between years. What comes next?',
+                sequence: ['1892', '1902', '1912', '1922'],
+                options: ['1926', '1930', '1932', '1942'],
+                correctIndex: 2,
+                hint: 'Each jersey is 10 years newer than the last.',
+                explanation: '1922 + 10 = 1932.',
+              },
+              {
+                id: 'p3',
+                prompt: 'The photo timeline takes bigger steps. Which year comes next?',
+                sequence: ['1900', '1925', '1950'],
+                options: ['1960', '1965', '1975', '2000'],
+                correctIndex: 2,
+                hint: 'Count the gap from 1900 to 1925 first.',
+                explanation: 'The photos jump 25 years at a time: 1950 + 25 = 1975.',
+              },
+              {
+                id: 'p4',
+                prompt: 'The "then and now" wall counts BACKWARDS through time. What comes next?',
+                sequence: ['2020', '2000', '1980'],
+                options: ['1970', '1960', '1950', '1990'],
+                correctIndex: 1,
+                hint: 'The years are going down — by how much each step?',
+                explanation: 'Counting back 20 each time: 1980 − 20 = 1960.',
+              },
+            ],
+          },
         ],
-      } satisfies QuizMissionParams,
+      } satisfies MixedMissionParams,
     },
     3: {
       wrapper: [
@@ -434,9 +905,9 @@ export const CH4_M4_HISTORY: Mission = {
             heading: 'Round 1 · Hockey and modern Canada',
             intro: 'The sport as a lens on the country.',
             questions: [
-              { id: 'q1', question: 'Early hockey leagues spread along railway lines because…', options: ['Trains carried teams between towns affordably', 'Rinks were built inside trains', 'Coincidence', 'Railways sponsored all teams'], correctIndex: 0, explanation: 'Rail networks made inter-town play possible — sport infrastructure followed transport infrastructure.', hint: 'How did a team get to an away game in 1900?' },
-              { id: 'q2', question: 'Radio broadcasts of hockey starting in the 1920s–30s mattered because they…', options: ['Replaced the games', 'Created shared national experiences across distant communities', 'Were silent', 'Only reached Toronto'], correctIndex: 1, explanation: 'Saturday night hockey on the radio became one of the first truly coast-to-coast Canadian rituals.', hint: 'Think about what "everyone listening at once" builds.' },
-              { id: 'q3', question: 'The 1972 Summit Series (Canada vs USSR) was about more than hockey because…', options: ['It decided the border', 'Cold War rivalry made it a symbolic contest of systems', 'The puck was special', 'It was played in summer'], correctIndex: 1, explanation: 'In the middle of the Cold War, the series carried enormous symbolic weight on both sides.', hint: 'What global tension existed in 1972?' },
+              { id: 'q1', question: 'Early hockey leagues spread along railway lines because…', options: ['Trains carried teams between towns affordably', 'Rinks were built inside trains', 'Coincidence', 'Railways sponsored all teams'], correctIndex: 0, explanation: 'Rail networks made inter-town play possible — sport infrastructure followed transport infrastructure.', hint: 'How did a team get to an away game in 1900?', visual: '🚂🏒' },
+              { id: 'q2', question: 'Radio broadcasts of hockey starting in the 1920s–30s mattered because they…', options: ['Replaced the games', 'Created shared national experiences across distant communities', 'Were silent', 'Only reached Toronto'], correctIndex: 1, explanation: 'Saturday night hockey on the radio became one of the first truly coast-to-coast Canadian rituals.', hint: 'Think about what "everyone listening at once" builds.', visual: '📻🍁' },
+              { id: 'q3', question: 'The 1972 Summit Series (Canada vs USSR) was about more than hockey because…', options: ['It decided the border', 'Cold War rivalry made it a symbolic contest of systems', 'The puck was special', 'It was played in summer'], correctIndex: 1, explanation: 'In the middle of the Cold War, the series carried enormous symbolic weight on both sides.', hint: 'What global tension existed in 1972?', visual: '🇨🇦🏒' },
               { id: 'q4', question: 'Hockey Night in Canada broadcasts in multiple languages (including Punjabi) today. This reflects…', options: ['Falling interest in hockey', 'Canada’s changing, multicultural population claiming a shared tradition', 'A translation error', 'Rules requiring it'], correctIndex: 1, explanation: 'The sport’s audience evolved with the country — new communities joined and reshaped the tradition.', hint: 'Who watches hockey in Canada today?' },
               { id: 'q5', question: 'Historians study community rinks, not just NHL arenas, because…', options: ['NHL records are secret', 'Everyday places reveal how ordinary people actually lived', 'Big arenas are too large to study', 'Rinks are newer'], correctIndex: 1, explanation: 'Social history looks at daily life — the local rink says more about a town than a distant pro arena.', hint: 'Whose history is "social history"?' },
             ],
@@ -446,9 +917,9 @@ export const CH4_M4_HISTORY: Mission = {
             intro: 'Same facts, different stories — how history actually gets written.',
             questions: [
               { id: 'q1', question: 'Two textbooks describe the same 1875 game: one calls it "hockey’s birth," another "one step in a long evolution." This difference is…', options: ['One book lying', 'Interpretation — historians frame the same evidence differently', 'A printing error', 'Impossible'], correctIndex: 1, explanation: 'Both can cite the same sources; framing and emphasis differ. Recognizing interpretation is core historical thinking.', hint: 'Can two honest people tell one event differently?' },
-              { id: 'q2', question: 'A team photo from 1910 shows no players of colour. A careful historian concludes…', options: ['No people of colour played hockey anywhere', 'This photo alone can’t support broad claims — check leagues like the Coloured Hockey League of the Maritimes (1895)', 'Photos never lie', 'The photo is fake'], correctIndex: 1, explanation: 'Absence in one source isn’t absence in history. The all-Black Coloured Hockey League predates the NHL by decades.', hint: 'What can a single photo NOT tell you?' },
+              { id: 'q2', question: 'A team photo from 1910 shows no players of colour. A careful historian concludes…', options: ['No people of colour played hockey anywhere', 'This photo alone can’t support broad claims — check leagues like the Coloured Hockey League of the Maritimes (1895)', 'Photos never lie', 'The photo is fake'], correctIndex: 1, explanation: 'Absence in one source isn’t absence in history. The all-Black Coloured Hockey League predates the NHL by decades.', hint: 'What can a single photo NOT tell you?', visual: '📷🏒' },
               { id: 'q3', question: 'Oral histories from players’ descendants are valuable but must be…', options: ['Ignored — only documents count', 'Weighed and cross-checked like any source, since memory shifts over generations', 'Accepted without question', 'Converted to statistics'], correctIndex: 1, explanation: 'Oral history captures voices documents miss; corroboration and care about memory’s limits keep it rigorous.', hint: 'Every source type has strengths AND limits.' },
-              { id: 'q4', question: 'A museum label written in 1965 calls old equipment "primitive." A modern curator might revise this because…', options: ['The equipment changed', '"Primitive" judges the past by today’s standards instead of understanding it in context', 'Labels must be in French', 'Old labels are illegal'], correctIndex: 1, explanation: 'Judging the past purely by present standards is called presentism — good history understands choices in their own context.', hint: 'Was 1900 gear "primitive" to the people using it?' },
+              { id: 'q4', question: 'A museum label written in 1965 calls old equipment "primitive." A modern curator might revise this because…', options: ['The equipment changed', '"Primitive" judges the past by today’s standards instead of understanding it in context', 'Labels must be in French', 'Old labels are illegal'], correctIndex: 1, explanation: 'Judging the past purely by present standards is called presentism — good history understands choices in their own context.', hint: 'Was 1900 gear "primitive" to the people using it?', visual: '🏛️🏷️' },
               { id: 'q5', question: 'The strongest historical claims rest on…', options: ['The loudest author', 'Multiple independent sources pointing the same way', 'The newest book', 'National pride'], correctIndex: 1, explanation: 'Converging independent evidence is the gold standard — in history as in science.', hint: 'One witness vs. many unconnected witnesses.' },
             ],
           },

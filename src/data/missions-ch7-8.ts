@@ -4,6 +4,7 @@
 import type { Mission } from '../types';
 import type {
   DragMatchMissionParams,
+  MixedMissionParams,
   PathPlannerMissionParams,
   QuizMissionParams,
 } from './missions';
@@ -22,60 +23,113 @@ export const CH7_M1_WORLD: Mission = {
     1: {
       wrapper: [
         { text: 'Owen here. For my school project, we’re mapping where everyone’s family comes from. First: learn the world map!' },
-        { text: 'Round 1: continents. Round 2: oceans and landmarks.' },
+        { text: 'Round 1: continents. Round 2: oceans and landmarks. Round 3: count what our class map collected!' },
       ],
       pattern: 'drag-match',
       params: {
         rounds: [
           {
+            kind: 'drag-match',
             heading: 'Round 1 · The seven continents',
             intro: 'Match each clue to its continent.',
             pairs: [
-              { id: 'r1p1', item: { label: 'Where Canada is', shape: 'huge-wide' }, slot: { label: 'North America' } },
-              { id: 'r1p2', item: { label: 'Where penguins live (brrr!)', shape: 'huge-wide' }, slot: { label: 'Antarctica' } },
+              { id: 'r1p1', item: { label: 'Where Canada is', shape: 'huge-wide', emoji: '🍁' }, slot: { label: 'North America' } },
+              { id: 'r1p2', item: { label: 'Where penguins live (brrr!)', shape: 'huge-wide', emoji: '🐧' }, slot: { label: 'Antarctica' } },
               { id: 'r1p3', item: { label: 'Biggest continent, most people', shape: 'huge-wide' }, slot: { label: 'Asia' } },
-              { id: 'r1p4', item: { label: 'Where lions and elephants roam', shape: 'huge-wide' }, slot: { label: 'Africa' } },
+              { id: 'r1p4', item: { label: 'Where lions and elephants roam', shape: 'huge-wide', emoji: '🦁' }, slot: { label: 'Africa' } },
               { id: 'r1p5', item: { label: 'Continent that’s also one country', shape: 'huge-wide' }, slot: { label: 'Australia' } },
             ],
             stuckHint: 'Asia is the giant one. Antarctica is the frozen one at the bottom.',
           },
           {
+            kind: 'drag-match',
             heading: 'Round 2 · Oceans and wonders',
             intro: 'Match each clue to the answer.',
             pairs: [
-              { id: 'r2p1', item: { label: 'Biggest ocean', shape: 'huge-wide' }, slot: { label: 'Pacific' } },
+              { id: 'r2p1', item: { label: 'Biggest ocean', shape: 'huge-wide', emoji: '🌊' }, slot: { label: 'Pacific' } },
               { id: 'r2p2', item: { label: 'Ocean between Canada and Europe', shape: 'huge-wide' }, slot: { label: 'Atlantic' } },
-              { id: 'r2p3', item: { label: 'Icy ocean at the top of the world', shape: 'huge-wide' }, slot: { label: 'Arctic' } },
+              { id: 'r2p3', item: { label: 'Icy ocean at the top of the world', shape: 'huge-wide', emoji: '🧊' }, slot: { label: 'Arctic' } },
               { id: 'r2p4', item: { label: 'The longest river (in Africa)', shape: 'long-rect' }, slot: { label: 'The Nile' } },
-              { id: 'r2p5', item: { label: 'The tallest mountain (in Asia)', shape: 'tall-thin' }, slot: { label: 'Mount Everest' } },
+              { id: 'r2p5', item: { label: 'The tallest mountain (in Asia)', shape: 'tall-thin', emoji: '🏔️' }, slot: { label: 'Mount Everest' } },
             ],
             stuckHint: 'The Arctic Ocean touches Canada’s north coast.',
           },
+          {
+            kind: 'counting',
+            heading: 'Round 3 · Count the class map',
+            intro: 'Our string-map is filling up! Help me count everything the class added.',
+            items: [
+              {
+                id: 'c1',
+                prompt: 'How many pins mark the families on our map?',
+                groups: [{ emoji: '📍', count: 6 }],
+                answer: 6,
+                options: [4, 5, 6, 7],
+                hint: 'Touch each pin as you count it.',
+                explanation: 'Six pins — six family journeys!',
+              },
+              {
+                id: 'c2',
+                prompt: 'Owen taped 4 little flags on Europe and 3 on Africa. How many flags is that?',
+                groups: [
+                  { emoji: '🚩', count: 4, label: 'On Europe' },
+                  { emoji: '🚩', count: 3, label: 'On Africa' },
+                ],
+                answer: 7,
+                options: [6, 7, 8, 9],
+                hint: 'Count the Europe flags first, then keep counting the Africa ones.',
+                explanation: '4 and 3 together make 7 flags.',
+              },
+              {
+                id: 'c3',
+                prompt: 'How many globes are spinning in our classroom?',
+                groups: [{ emoji: '🌍', count: 5 }],
+                answer: 5,
+                options: [3, 4, 5, 6],
+                hint: 'Count them one at a time.',
+                explanation: 'Five globes — one for each table!',
+              },
+              {
+                id: 'c4',
+                prompt: 'Families travelled long ago on 3 ships and today on 2 planes. How many journeys in all?',
+                groups: [
+                  { emoji: '⛵', count: 3, label: 'By ship' },
+                  { emoji: '✈️', count: 2, label: 'By plane' },
+                ],
+                answer: 5,
+                options: [4, 5, 6, 7],
+                hint: 'Start at 3, then count up 2 more.',
+                explanation: '3 + 2 = 5 journeys to Canada.',
+              },
+            ],
+          },
         ],
-      } satisfies DragMatchMissionParams,
+      } satisfies MixedMissionParams,
     },
     2: {
       wrapper: [
         { text: 'Owen. Our class made a string-map: every kid’s family connects Toronto to somewhere in the world. The strings go EVERYWHERE.' },
-        { text: 'Round 1: countries and capitals. Round 2: reading the world map like a pro.' },
+        { text: 'Round 1: countries and capitals. Round 2: reading the world map like a pro. Round 3: crack the map patterns.' },
       ],
       pattern: 'drag-match',
       params: {
         rounds: [
           {
+            kind: 'drag-match',
             heading: 'Round 1 · Countries and capitals',
             intro: 'Match each country to its capital.',
             pairs: [
-              { id: 'r1p1', item: { label: 'Canada', shape: 'huge-wide' }, slot: { label: 'Ottawa' } },
-              { id: 'r1p2', item: { label: 'Japan', shape: 'small-square' }, slot: { label: 'Tokyo' } },
-              { id: 'r1p3', item: { label: 'France', shape: 'small-square' }, slot: { label: 'Paris' } },
-              { id: 'r1p4', item: { label: 'India', shape: 'wide-short' }, slot: { label: 'New Delhi' } },
-              { id: 'r1p5', item: { label: 'Brazil', shape: 'wide-short' }, slot: { label: 'Brasília' } },
-              { id: 'r1p6', item: { label: 'Kenya', shape: 'small-square' }, slot: { label: 'Nairobi' } },
+              { id: 'r1p1', item: { label: 'Canada', shape: 'huge-wide', emoji: '🇨🇦' }, slot: { label: 'Ottawa' } },
+              { id: 'r1p2', item: { label: 'Japan', shape: 'small-square', emoji: '🇯🇵' }, slot: { label: 'Tokyo' } },
+              { id: 'r1p3', item: { label: 'France', shape: 'small-square', emoji: '🇫🇷' }, slot: { label: 'Paris' } },
+              { id: 'r1p4', item: { label: 'India', shape: 'wide-short', emoji: '🇮🇳' }, slot: { label: 'New Delhi' } },
+              { id: 'r1p5', item: { label: 'Brazil', shape: 'wide-short', emoji: '🇧🇷' }, slot: { label: 'Brasília' } },
+              { id: 'r1p6', item: { label: 'Kenya', shape: 'small-square', emoji: '🇰🇪' }, slot: { label: 'Nairobi' } },
             ],
             stuckHint: 'Brazil’s capital isn’t Rio — Brasília was purpose-built in the 1950s.',
           },
           {
+            kind: 'drag-match',
             heading: 'Round 2 · Map-reading pro',
             intro: 'Match each term to its meaning.',
             pairs: [
@@ -87,8 +141,51 @@ export const CH7_M1_WORLD: Mission = {
             ],
             stuckHint: '"Lat is flat" — latitude lines lie flat like rungs of a ladder.',
           },
+          {
+            kind: 'pattern-puzzle',
+            heading: 'Round 3 · Map patterns',
+            intro: 'Maps are full of patterns. Figure out what comes next in each one.',
+            items: [
+              {
+                id: 'p1',
+                prompt: 'The classroom globe spins past the same views in order. What comes next?',
+                sequence: ['🌍', '🌎', '🌏', '🌍', '🌎'],
+                options: ['🌏', '🌍', '🗺️', '🌎'],
+                correctIndex: 0,
+                hint: 'Three views repeat in order: Europe–Africa, the Americas, then Asia–Australia.',
+                explanation: 'The pattern repeats in threes — 🌍 🌎 🌏 — so 🌏 spins past next.',
+              },
+              {
+                id: 'p2',
+                prompt: 'Owen lines up landmark stickers. What comes next?',
+                sequence: ['🗼', '🗽', '🗽', '🗼', '🗽', '🗽', '🗼'],
+                options: ['🗼', '🗽', '🕌', '🗿'],
+                correctIndex: 1,
+                hint: 'One tower, then two statues — over and over.',
+                explanation: 'The repeating chunk is 🗼🗽🗽, so the next sticker is 🗽.',
+              },
+              {
+                id: 'p3',
+                prompt: 'Owen labels every OTHER map column. Which letter comes next?',
+                sequence: ['A', 'C', 'E', 'G'],
+                options: ['H', 'I', 'J', 'K'],
+                correctIndex: 1,
+                hint: 'The labels skip one letter each time.',
+                explanation: 'A, C, E, G skips a letter each step — next is I.',
+              },
+              {
+                id: 'p4',
+                prompt: 'Latitude lines on our map are drawn every 15 degrees. Which line comes next?',
+                sequence: ['0°', '15°', '30°', '45°'],
+                options: ['50°', '55°', '60°', '75°'],
+                correctIndex: 2,
+                hint: 'Count up by 15 each time.',
+                explanation: '45 + 15 = 60 — the 60° line is next.',
+              },
+            ],
+          },
         ],
-      } satisfies DragMatchMissionParams,
+      } satisfies MixedMissionParams,
     },
     3: {
       wrapper: [
@@ -143,62 +240,152 @@ export const CH7_M2_STORIES: Mission = {
     1: {
       wrapper: [
         { text: 'Tessa here. For the family project, I interviewed our neighbours about how their families came to Canada. Everyone has a story.' },
-        { text: 'Listen to each little story, then answer the questions.' },
+        { text: 'Listen to each little story and answer the questions — then play a pattern game with me!' },
       ],
       pattern: 'quiz',
       params: {
         rounds: [
           {
+            kind: 'quiz',
             heading: 'Round 1 · Mrs. Chen’s story',
             intro: '“My grandparents came from China by ship long ago. They opened a small restaurant. My grandmother saved her first dollar — we still have it in a frame.”',
             questions: [
-              { id: 'q1', question: 'How did Mrs. Chen’s grandparents travel to Canada?', options: ['By ship', 'By plane', 'By train', 'By car'], correctIndex: 0, explanation: 'Long ago, most people crossed the ocean by ship — planes came later.', hint: 'Read the first sentence again.' },
+              { id: 'q1', question: 'How did Mrs. Chen’s grandparents travel to Canada?', visual: '🇨🇳➡️🇨🇦', options: ['By ship', 'By plane', 'By train', 'By car'], correctIndex: 0, explanation: 'Long ago, most people crossed the ocean by ship — planes came later.', hint: 'Read the first sentence again.' },
               { id: 'q2', question: 'What did they open?', options: ['A school', 'A restaurant', 'A bank', 'A farm'], correctIndex: 1, explanation: 'A small restaurant — many newcomers started family businesses.', hint: 'Where do you eat?' },
-              { id: 'q3', question: 'What does the framed dollar tell us?', options: ['They were rich', 'That first earnings were special and worth remembering', 'Money was bigger then', 'Frames were cheap'], correctIndex: 1, explanation: 'Keeping the first dollar shows how proud and hopeful that moment was.', hint: 'Why keep something so small so carefully?' },
+              { id: 'q3', question: 'What does the framed dollar tell us?', visual: '🖼️💵', options: ['They were rich', 'That first earnings were special and worth remembering', 'Money was bigger then', 'Frames were cheap'], correctIndex: 1, explanation: 'Keeping the first dollar shows how proud and hopeful that moment was.', hint: 'Why keep something so small so carefully?' },
             ],
           },
           {
+            kind: 'quiz',
             heading: 'Round 2 · Mr. Osei’s story',
             intro: '“I came from Ghana fifteen years ago to study engineering. It was January. I had never seen snow — I phoned my mother from the airport just to describe it!”',
             questions: [
-              { id: 'q1', question: 'Why did Mr. Osei come to Canada?', options: ['For a vacation', 'To study engineering', 'To see snow', 'To play hockey'], correctIndex: 1, explanation: 'He came to study — many people immigrate for education.', hint: 'What was he going to learn?' },
+              { id: 'q1', question: 'Why did Mr. Osei come to Canada?', visual: '🇬🇭➡️🇨🇦', options: ['For a vacation', 'To study engineering', 'To see snow', 'To play hockey'], correctIndex: 1, explanation: 'He came to study — many people immigrate for education.', hint: 'What was he going to learn?' },
               { id: 'q2', question: 'What surprised him at the airport?', options: ['The food', 'The snow', 'The size', 'The music'], correctIndex: 1, explanation: 'His first snow ever! He had to tell his mother right away.', hint: 'It was January in Canada…' },
-              { id: 'q3', question: 'Who did he phone?', options: ['His teacher', 'His mother', 'A taxi', 'The weather office'], correctIndex: 1, explanation: 'His mother, back in Ghana — sharing the moment across the ocean.', hint: 'Family first.' },
+              { id: 'q3', question: 'Who did he phone?', visual: '🛬', options: ['His teacher', 'His mother', 'A taxi', 'The weather office'], correctIndex: 1, explanation: 'His mother, back in Ghana — sharing the moment across the ocean.', hint: 'Family first.' },
+            ],
+          },
+          {
+            kind: 'pattern-puzzle',
+            heading: 'Round 3 · Story patterns',
+            intro: 'Stories have patterns too! Figure out what comes next in each of mine.',
+            items: [
+              {
+                id: 'p1',
+                prompt: 'First I read a story, then I write one down. What comes next?',
+                sequence: ['📖', '✏️', '📖', '✏️', '📖'],
+                options: ['📖', '✏️', '🎨', '📚'],
+                correctIndex: 1,
+                hint: 'Read, write, read, write…',
+                explanation: 'The pattern takes turns: after 📖 comes ✏️.',
+              },
+              {
+                id: 'p2',
+                prompt: 'We’re spelling our country’s name, one letter at a time! Which letter comes next?',
+                sequence: ['C', 'A', 'N', 'A', 'D'],
+                options: ['A', 'N', 'C', 'D'],
+                correctIndex: 0,
+                hint: 'Say it slowly: C-A-N-A-D…',
+                explanation: 'C-A-N-A-D-A — the last letter is A. That spells CANADA!',
+              },
+              {
+                id: 'p3',
+                prompt: 'Long ago families came by ship; now most come by plane. What comes next?',
+                sequence: ['🚢', '✈️', '🚢', '✈️', '🚢'],
+                options: ['🚢', '🚂', '✈️', '🚗'],
+                correctIndex: 2,
+                hint: 'Ship, plane, ship, plane…',
+                explanation: 'The pattern takes turns, so ✈️ is next.',
+              },
+              {
+                id: 'p4',
+                prompt: 'Grandma, baby, grandma, baby… who comes next in the photo line?',
+                sequence: ['👵', '👶', '👵', '👶', '👵'],
+                options: ['👵', '👶', '🧑', '👴'],
+                correctIndex: 1,
+                hint: 'The photos take turns: old, young, old, young…',
+                explanation: 'After 👵 comes 👶 — the pattern repeats in twos.',
+              },
             ],
           },
         ],
-      } satisfies QuizMissionParams,
+      } satisfies MixedMissionParams,
     },
     2: {
       wrapper: [
         { text: 'Tessa. I’m writing the school-paper feature on family journeys. Real stories, carefully read.' },
-        { text: 'Two longer stories, with questions that need real thinking.' },
+        { text: 'Two longer stories with questions that need real thinking — then pattern puzzles from the newspaper archive.' },
       ],
       pattern: 'quiz',
       params: {
         rounds: [
           {
+            kind: 'quiz',
             heading: 'Round 1 · The Rossi family',
             intro: '“After the war, my great-grandfather left Italy with one suitcase and a letter from his cousin in Toronto promising work in construction. He helped build the subway — every time we ride it, my dad knocks the wall twice, for luck and for him.”',
             questions: [
-              { id: 'q1', question: 'What brought the great-grandfather specifically to Toronto?', options: ['Random chance', 'A cousin’s letter promising work', 'A government order', 'A construction prize'], correctIndex: 1, explanation: 'Family networks — “chain migration” — often decided WHERE people landed.', hint: 'What did the cousin send?' },
-              { id: 'q2', question: '“One suitcase” suggests the family left…', options: ['With almost everything they owned', 'With very little', 'By accident', 'Temporarily'], correctIndex: 1, explanation: 'One suitcase for a whole new life tells you how much was left behind.', hint: 'How much fits in one suitcase?' },
-              { id: 'q3', question: 'Knocking the subway wall twice is best described as…', options: ['A safety check', 'A family ritual of remembrance', 'A complaint', 'A building inspection'], correctIndex: 1, explanation: 'A small ritual keeps the family’s story alive in an everyday place.', hint: '"For luck and for him."' },
+              { id: 'q1', question: 'What brought the great-grandfather specifically to Toronto?', visual: '🇮🇹➡️🇨🇦', options: ['Random chance', 'A cousin’s letter promising work', 'A government order', 'A construction prize'], correctIndex: 1, explanation: 'Family networks — “chain migration” — often decided WHERE people landed.', hint: 'What did the cousin send?' },
+              { id: 'q2', question: '“One suitcase” suggests the family left…', visual: '🧳', options: ['With almost everything they owned', 'With very little', 'By accident', 'Temporarily'], correctIndex: 1, explanation: 'One suitcase for a whole new life tells you how much was left behind.', hint: 'How much fits in one suitcase?' },
+              { id: 'q3', question: 'Knocking the subway wall twice is best described as…', visual: '🚇', options: ['A safety check', 'A family ritual of remembrance', 'A complaint', 'A building inspection'], correctIndex: 1, explanation: 'A small ritual keeps the family’s story alive in an everyday place.', hint: '"For luck and for him."' },
               { id: 'q4', question: 'When did this migration likely happen?', options: ['1860s', 'Just after a war — mid-1900s', 'Last year', '1700s'], correctIndex: 1, explanation: '“After the war” + subway construction points to post-WWII Toronto, when many Italians immigrated.', hint: 'Toronto’s subway opened in 1954.' },
             ],
           },
           {
+            kind: 'quiz',
             heading: 'Round 2 · Amal’s story',
             intro: '“We arrived from Syria when I was seven. A group of strangers had signed papers to sponsor us — they met us at the airport holding a sign with our names spelled almost right. Those strangers are now the people we call on snow days, birthdays, everything.”',
             questions: [
-              { id: 'q1', question: 'Who met Amal’s family at the airport?', options: ['Government officials', 'Private sponsors — ordinary Canadians', 'Old friends', 'Nobody'], correctIndex: 1, explanation: 'Canada’s private sponsorship program lets groups of citizens support refugee families directly.', hint: '“Strangers had signed papers…”' },
+              { id: 'q1', question: 'Who met Amal’s family at the airport?', visual: '🛬🪧', options: ['Government officials', 'Private sponsors — ordinary Canadians', 'Old friends', 'Nobody'], correctIndex: 1, explanation: 'Canada’s private sponsorship program lets groups of citizens support refugee families directly.', hint: '“Strangers had signed papers…”' },
               { id: 'q2', question: '“Spelled almost right” adds what to the story?', options: ['Anger', 'A warm, human, imperfect detail', 'Confusion about identity', 'Nothing'], correctIndex: 1, explanation: 'The imperfect sign makes the welcome feel real — caring, even when not flawless.', hint: 'How does that detail make you feel?' },
               { id: 'q3', question: 'The strangers becoming “snow day people” shows…', options: ['They moved in', 'Sponsorship grew into lasting friendship', 'Snow is dangerous', 'They were paid'], correctIndex: 1, explanation: 'The relationship outlived the paperwork — that’s the heart of the story.', hint: 'Who do YOU call on a snow day?' },
               { id: 'q4', question: 'Amal’s story is told from the view of…', options: ['A sponsor', 'A child who lived it, now older', 'A reporter', 'A pilot'], correctIndex: 1, explanation: 'First person, remembering being seven — a lived memory, not an observer’s report.', hint: 'Who says “we arrived”?' },
             ],
           },
+          {
+            kind: 'pattern-puzzle',
+            heading: 'Round 3 · Archive patterns',
+            intro: 'Sorting the newspaper archive for my feature, I keep spotting patterns. Finish each one.',
+            items: [
+              {
+                id: 'p1',
+                prompt: 'The archive keeps one family photo every 20 years. Which year is next?',
+                sequence: ['1904', '1924', '1944', '1964'],
+                options: ['1974', '1984', '1994', '2004'],
+                correctIndex: 1,
+                hint: 'Add 20 each time.',
+                explanation: '1964 + 20 = 1984.',
+              },
+              {
+                id: 'p2',
+                prompt: 'Your family tree doubles every generation back: you, parents, grandparents… What number comes next?',
+                sequence: ['1', '2', '4', '8'],
+                options: ['10', '12', '16', '24'],
+                correctIndex: 2,
+                hint: 'Each number is double the one before.',
+                explanation: '8 × 2 = 16 great-great-grandparents — the tree doubles every step back!',
+              },
+              {
+                id: 'p3',
+                prompt: 'The oldest files are labelled backwards through the alphabet, skipping a letter. Which label comes next?',
+                sequence: ['Z', 'X', 'V', 'T'],
+                options: ['S', 'R', 'Q', 'P'],
+                correctIndex: 1,
+                hint: 'Go backwards and skip one letter each time.',
+                explanation: 'Z, X, V, T… skip S and land on R.',
+              },
+              {
+                id: 'p4',
+                prompt: 'The photo display cycles: grandmother, mother, daughter. Who comes next?',
+                sequence: ['👵', '👩', '👧', '👵', '👩'],
+                options: ['👧', '👵', '👩', '👶'],
+                correctIndex: 0,
+                hint: 'Three generations repeat in the same order.',
+                explanation: 'The cycle is 👵 👩 👧 — the daughter 👧 is next.',
+              },
+            ],
+          },
         ],
-      } satisfies QuizMissionParams,
+      } satisfies MixedMissionParams,
     },
     3: {
       wrapper: [
@@ -213,10 +400,10 @@ export const CH7_M2_STORIES: Mission = {
             intro: 'Canada’s population story, era by era.',
             questions: [
               { id: 'q1', question: 'Before any immigrants arrived, Canada was home to…', options: ['No one', 'Indigenous peoples, for thousands of years', 'Only animals', 'Vikings only'], correctIndex: 1, explanation: 'First Nations, Inuit, and later Métis peoples — here for millennia before European settlement.', hint: 'Whose land was it first?' },
-              { id: 'q2', question: 'The Canadian Pacific Railway (1880s) was built with major labour from…', options: ['Chinese workers, often dangerously underpaid', 'Only local farmers', 'Steam robots', 'British nobility'], correctIndex: 0, explanation: 'Thousands of Chinese labourers did the most dangerous work for less pay — and then faced a head tax designed to keep families out.', hint: 'A hard truth of the national-dream story.' },
-              { id: 'q3', question: 'In the early 1900s, the Prairies filled with homesteads farmed largely by…', options: ['Eastern European immigrants (Ukrainians and others)', 'Australians', 'No one', 'Coastal fishers'], correctIndex: 0, explanation: 'Free-land policies drew huge Ukrainian, Polish, and German settlement to the Prairies — hence the perogies.', hint: 'Why does Saskatchewan love perogies?' },
+              { id: 'q2', question: 'The Canadian Pacific Railway (1880s) was built with major labour from…', visual: '🚂🏔️', options: ['Chinese workers, often dangerously underpaid', 'Only local farmers', 'Steam robots', 'British nobility'], correctIndex: 0, explanation: 'Thousands of Chinese labourers did the most dangerous work for less pay — and then faced a head tax designed to keep families out.', hint: 'A hard truth of the national-dream story.' },
+              { id: 'q3', question: 'In the early 1900s, the Prairies filled with homesteads farmed largely by…', visual: '🌾', options: ['Eastern European immigrants (Ukrainians and others)', 'Australians', 'No one', 'Coastal fishers'], correctIndex: 0, explanation: 'Free-land policies drew huge Ukrainian, Polish, and German settlement to the Prairies — hence the perogies.', hint: 'Why does Saskatchewan love perogies?' },
               { id: 'q4', question: 'The points system (1967) changed immigration by…', options: ['Closing the borders', 'Selecting on skills/education rather than country of origin', 'Allowing only doctors', 'Requiring French only'], correctIndex: 1, explanation: 'It replaced openly discriminatory country-based rules with criteria like education and language — reshaping who could come.', hint: 'From “where from?” to “what can you do?”' },
-              { id: 'q5', question: 'Today, roughly what share of Torontonians were born outside Canada?', options: ['About 10%', 'About 25%', 'Nearly half', 'Almost none'], correctIndex: 2, explanation: 'Close to half — among the highest of any major city in the world.', hint: 'We compared this to Queens, NY on our last trip.' },
+              { id: 'q5', question: 'Today, roughly what share of Torontonians were born outside Canada?', visual: '🏙️', options: ['About 10%', 'About 25%', 'Nearly half', 'Almost none'], correctIndex: 2, explanation: 'Close to half — among the highest of any major city in the world.', hint: 'We compared this to Queens, NY on our last trip.' },
             ],
           },
           {
@@ -224,7 +411,7 @@ export const CH7_M2_STORIES: Mission = {
             intro: 'My feature quotes documents and memories. Both need care.',
             questions: [
               { id: 'q1', question: 'A 1910 newspaper calls some immigrants “undesirable.” A careful writer treats this as…', options: ['A fact about those immigrants', 'Evidence of the era’s attitudes and biases', 'Proof newspapers lie', 'Unusable'], correctIndex: 1, explanation: 'It’s a primary source about the PREJUDICE of the time, not about the people it described.', hint: 'What does the word reveal, and about whom?' },
-              { id: 'q2', question: 'Grandpa remembers the ship as “enormous”; the records say it was small. Best handling?', options: ['Trust the records, mock the memory', 'Report both: memory captures experience, records capture measurements', 'Trust the memory only', 'Delete the detail'], correctIndex: 1, explanation: 'To a child leaving home, any ship is enormous. Both sources are true about different things.', hint: 'What was each source measuring?' },
+              { id: 'q2', question: 'Grandpa remembers the ship as “enormous”; the records say it was small. Best handling?', visual: '🚢', options: ['Trust the records, mock the memory', 'Report both: memory captures experience, records capture measurements', 'Trust the memory only', 'Delete the detail'], correctIndex: 1, explanation: 'To a child leaving home, any ship is enormous. Both sources are true about different things.', hint: 'What was each source measuring?' },
               { id: 'q3', question: 'Why include hard stories (head tax, turned-away ships) in a family-history feature?', options: ['Drama sells', 'Honest history builds real understanding; leaving them out distorts the picture', 'To assign blame to readers', 'No reason'], correctIndex: 1, explanation: 'Celebrating arrivals while erasing barriers tells a half-story. Honest framing respects the people who lived it.', hint: 'What would the half-story miss?' },
               { id: 'q4', question: 'An interviewee asks you not to print her real name. You should…', options: ['Print it anyway — facts are facts', 'Respect it and note the name was withheld', 'Cancel the story', 'Make up quotes instead'], correctIndex: 1, explanation: 'Journalistic ethics: protect sources, disclose the protection. Trust is the whole game.', hint: 'What would YOU want if it were your story?' },
             ],
@@ -303,12 +490,13 @@ export const CH7_M3_ROUTE: Mission = {
     2: {
       wrapper: [
         { text: 'Dada T. Planning the heritage-visit route across Ontario — every stop is a relative, every number is real driving distance (×10 km).' },
-        { text: 'Find the best routes. A good planner checks more than one way!' },
+        { text: 'Find the best routes, then check my trip math at the kitchen table. A good planner checks more than one way!' },
       ],
       pattern: 'path-planner',
       params: {
         rounds: [
           {
+            kind: 'path-planner',
             heading: 'Round 1 · Cheapest route to Ottawa cousins',
             intro: 'Find the SHORTEST route from Toronto to the cousins in Ottawa.',
             nodes: [
@@ -335,6 +523,7 @@ export const CH7_M3_ROUTE: Mission = {
             costUnit: '×10 km',
           },
           {
+            kind: 'path-planner',
             heading: 'Round 2 · Gas budget to Windsor',
             intro: 'Great-Uncle in Windsor. Fuel budget: $58. Each number is dollars of gas.',
             nodes: [
@@ -360,8 +549,51 @@ export const CH7_M3_ROUTE: Mission = {
             objective: { budget: 58 },
             costUnit: '$',
           },
+          {
+            kind: 'word-problem',
+            heading: 'Round 3 · Trip math at the kitchen table',
+            intro: 'Dada T double-checks the distances before anyone gets in the van. Work these out and type each answer.',
+            items: [
+              {
+                id: 'w1',
+                visual: '🚐🗺️',
+                problem: 'From Toronto it is 260 km to Kingston, then 200 km more to Ottawa. How long is the whole drive to the cousins?',
+                answer: 460,
+                unit: 'km',
+                hint: 'Add the two legs of the trip.',
+                explanation: '260 + 200 = 460 km door to door.',
+              },
+              {
+                id: 'w2',
+                visual: '🛣️🛣️',
+                problem: 'To Great-Uncle in Windsor, the route through London is 370 km and the route through Chatham is 350 km. How many kilometres does the shorter route save?',
+                answer: 20,
+                unit: 'km',
+                hint: 'Find the difference between the two routes.',
+                explanation: '370 − 350 = 20 km saved — and Chatham has Dada T’s favourite chip truck.',
+              },
+              {
+                id: 'w3',
+                visual: '🚐⏱️',
+                problem: 'The van travels about 80 km each hour on the highway. How many hours does a 400 km trip take?',
+                answer: 5,
+                unit: 'hours',
+                hint: 'How many 80s fit into 400?',
+                explanation: '400 ÷ 80 = 5 hours — snack stops not included.',
+              },
+              {
+                id: 'w4',
+                visual: '⛽🧮',
+                problem: 'The van uses 10 L of gas for every 100 km. How many litres does the 400 km trip use?',
+                answer: 40,
+                unit: 'L',
+                hint: 'How many hundreds of kilometres is 400?',
+                explanation: '400 km is 4 hundreds, and 4 × 10 = 40 L.',
+              },
+            ],
+          },
         ],
-      } satisfies PathPlannerMissionParams,
+      } satisfies MixedMissionParams,
     },
     3: {
       wrapper: [
@@ -446,68 +678,158 @@ export const CH8_M1_WEATHER: Mission = {
     1: {
       wrapper: [
         { text: 'Tessa here. A BIG storm is coming this week, so I set up a weather station on the porch!' },
-        { text: 'Round 1: weather words. Round 2: reading my measurements.' },
+        { text: 'Round 1: weather words. Round 2: reading my measurements. Round 3: sky patterns.' },
       ],
       pattern: 'quiz',
       params: {
         rounds: [
           {
+            kind: 'quiz',
             heading: 'Round 1 · Weather words',
             intro: 'Know your sky.',
             questions: [
               { id: 'q1', question: 'A thermometer measures…', options: ['Wind', 'Rain', 'Temperature', 'Clouds'], correctIndex: 2, explanation: 'Thermometers track how hot or cold it is.', hint: '"Thermo" means heat.' },
               { id: 'q2', question: 'Big, dark, towering clouds usually mean…', options: ['Sunshine', 'A storm is coming', 'Snow only', 'Nothing'], correctIndex: 1, explanation: 'Tall dark clouds (cumulonimbus!) are storm factories.', hint: 'What colour is a storm sky?' },
-              { id: 'q3', question: 'A rain gauge collects rain so we can measure…', options: ['How wet it tastes', 'How much fell', 'Cloud names', 'Wind speed'], correctIndex: 1, explanation: 'It catches rain in a tube marked in millimetres.', hint: 'It’s like a measuring cup for the sky.' },
+              { id: 'q3', question: 'A rain gauge collects rain so we can measure…', visual: '🌧️', options: ['How wet it tastes', 'How much fell', 'Cloud names', 'Wind speed'], correctIndex: 1, explanation: 'It catches rain in a tube marked in millimetres.', hint: 'It’s like a measuring cup for the sky.' },
               { id: 'q4', question: 'Thunder is the SOUND made by…', options: ['Clouds bumping', 'Lightning heating the air', 'Rain hitting roofs', 'The wind'], correctIndex: 1, explanation: 'Lightning superheats air so fast it booms outward — that’s thunder.', hint: 'Light first, sound after.' },
-              { id: 'q5', question: 'If you see lightning, the safest place is…', options: ['Under a tall tree', 'Inside a building', 'In the pool', 'On the trampoline'], correctIndex: 1, explanation: 'Indoors, away from tall trees and water. (The trampoline can wait!)', hint: 'NOT under the tallest thing around.' },
+              { id: 'q5', question: 'If you see lightning, the safest place is…', visual: '⛈️', options: ['Under a tall tree', 'Inside a building', 'In the pool', 'On the trampoline'], correctIndex: 1, explanation: 'Indoors, away from tall trees and water. (The trampoline can wait!)', hint: 'NOT under the tallest thing around.' },
             ],
           },
           {
+            kind: 'quiz',
             heading: 'Round 2 · Read my weather chart',
             intro: 'My porch readings this week: Mon 18°, Tue 21°, Wed 15°, Thu 12°, Fri 9°.',
             questions: [
-              { id: 'q1', question: 'Which day was warmest?', options: ['Monday', 'Tuesday', 'Wednesday', 'Friday'], correctIndex: 1, explanation: 'Tuesday hit 21° — the top of the chart.', hint: 'Find the biggest number.' },
+              { id: 'q1', question: 'Which day was warmest?', visual: '📊', options: ['Monday', 'Tuesday', 'Wednesday', 'Friday'], correctIndex: 1, explanation: 'Tuesday hit 21° — the top of the chart.', hint: 'Find the biggest number.' },
               { id: 'q2', question: 'Which day was coldest?', options: ['Monday', 'Wednesday', 'Thursday', 'Friday'], correctIndex: 3, explanation: 'Friday, at 9° — the storm brought the cold.', hint: 'Find the smallest number.' },
               { id: 'q3', question: 'From Tuesday to Friday the temperature…', options: ['Went up', 'Went down', 'Stayed the same', 'Jumped around'], correctIndex: 1, explanation: '21 → 15 → 12 → 9: falling all the way as the storm came in.', hint: 'Follow the numbers in order.' },
               { id: 'q4', question: 'How much colder was Friday than Monday?', options: ['7°', '9°', '11°', '3°'], correctIndex: 1, explanation: '18 − 9 = 9 degrees colder.', hint: 'Monday minus Friday.' },
               { id: 'q5', question: 'Falling temperature + dark clouds + rising wind means…', options: ['Beach day', 'The storm is almost here', 'Nothing', 'Time to water the garden'], correctIndex: 1, explanation: 'All three signs together = storm on the way. Batten down!', hint: 'Three storm clues at once.' },
             ],
           },
+          {
+            kind: 'pattern-puzzle',
+            heading: 'Round 3 · Sky patterns',
+            intro: 'I noticed the sky repeats itself! What comes next in each pattern?',
+            items: [
+              {
+                id: 'p1',
+                prompt: 'Sunny, rainy, sunny, rainy… what comes next?',
+                sequence: ['☀️', '🌧️', '☀️', '🌧️', '☀️'],
+                options: ['☀️', '🌧️', '❄️', '🌈'],
+                correctIndex: 1,
+                hint: 'The sky takes turns: sun, rain, sun, rain…',
+                explanation: 'After ☀️ comes 🌧️ — the pattern repeats in twos.',
+              },
+              {
+                id: 'p2',
+                prompt: 'My storm log goes: cloud, cloud, storm. What comes next?',
+                sequence: ['☁️', '☁️', '⛈️', '☁️', '☁️', '⛈️', '☁️'],
+                options: ['⛈️', '☁️', '☀️', '🌧️'],
+                correctIndex: 1,
+                hint: 'The repeating chunk is cloud–cloud–storm. How many clouds so far in this chunk?',
+                explanation: 'Each chunk is ☁️☁️⛈️ — only one cloud so far, so another ☁️ comes before the storm.',
+              },
+              {
+                id: 'p3',
+                prompt: 'The clouds grow thicker every hour. What happens next?',
+                sequence: ['🌤️', '⛅', '🌥️', '☁️'],
+                options: ['🌧️', '☀️', '🌤️', '🌈'],
+                correctIndex: 0,
+                hint: 'The sun is disappearing and the cloud keeps growing…',
+                explanation: 'When clouds grow thick and dark enough, the rain 🌧️ falls.',
+              },
+              {
+                id: 'p4',
+                prompt: 'Day, night, day, night… what comes next?',
+                sequence: ['🌞', '🌙', '🌞', '🌙', '🌞'],
+                options: ['🌞', '🌙', '⭐', '☁️'],
+                correctIndex: 1,
+                hint: 'What always follows the day?',
+                explanation: 'Night follows day — 🌙 is next, every single time.',
+              },
+            ],
+          },
         ],
-      } satisfies QuizMissionParams,
+      } satisfies MixedMissionParams,
     },
     2: {
       wrapper: [
         { text: 'Tessa. Storm week, day three. My weather station logs temperature, pressure, wind, and rain — and the data tells a story.' },
-        { text: 'Round 1: how weather works. Round 2: data analysis.' },
+        { text: 'Round 1: how weather works. Round 2: data analysis. Round 3: storm math with no multiple choice.' },
       ],
       pattern: 'quiz',
       params: {
         rounds: [
           {
+            kind: 'quiz',
             heading: 'Round 1 · How storms work',
             intro: 'The machinery behind the weather.',
             questions: [
               { id: 'q1', question: 'Falling air pressure usually signals…', options: ['Clearing skies', 'Approaching storms', 'No change', 'Colder nights only'], correctIndex: 1, explanation: 'Storms are low-pressure systems — a falling barometer is the classic warning.', hint: 'What does a barometer drop mean?' },
               { id: 'q2', question: 'Wind is caused by…', options: ['Trees waving', 'Air moving from high to low pressure', 'The Earth breathing', 'Clouds pushing'], correctIndex: 1, explanation: 'Air flows from high-pressure areas toward low-pressure ones — that flow is wind.', hint: 'Air moves from squeeze to space.' },
               { id: 'q3', question: 'Thunderstorms get their energy from…', options: ['Warm, moist air rising', 'Cold dry ground', 'The moon', 'Traffic'], correctIndex: 0, explanation: 'Rising warm humid air builds the towering clouds that power storms.', hint: 'Storms love hot, sticky days.' },
-              { id: 'q4', question: 'You count 6 seconds between lightning and thunder. The strike is about…', options: ['6 km away', '2 km away', '600 m away', 'Right overhead'], correctIndex: 1, explanation: 'Sound travels ~1 km每 3 seconds: 6 ÷ 3 = 2 km.', hint: 'Divide the seconds by 3.' },
+              { id: 'q4', question: 'You count 6 seconds between lightning and thunder. The strike is about…', visual: '⚡👂', options: ['6 km away', '2 km away', '600 m away', 'Right overhead'], correctIndex: 1, explanation: 'Sound travels about 1 km every 3 seconds: 6 ÷ 3 = 2 km.', hint: 'Divide the seconds by 3.' },
               { id: 'q5', question: 'Environment Canada issues a storm WARNING vs a WATCH when…', options: ['They’re identical', 'Warning = severe weather is happening or imminent; watch = conditions are favourable', 'Watch is worse', 'Warnings are only for winter'], correctIndex: 1, explanation: 'Watch = be ready; warning = it’s here or about to be. Warning is the more urgent one.', hint: 'Which one means “now”?' },
             ],
           },
           {
+            kind: 'quiz',
             heading: 'Round 2 · Storm-week data',
             intro: 'Rainfall (mm): Mon 2, Tue 0, Wed 14, Thu 38, Fri 11. Wind peak: 72 km/h Thursday.',
             questions: [
-              { id: 'q1', question: 'Total rainfall for the week?', options: ['55 mm', '65 mm', '75 mm', '38 mm'], correctIndex: 1, explanation: '2 + 0 + 14 + 38 + 11 = 65 mm.', hint: 'Add all five days.' },
+              { id: 'q1', question: 'Total rainfall for the week?', visual: '🌧️📊', options: ['55 mm', '65 mm', '75 mm', '38 mm'], correctIndex: 1, explanation: '2 + 0 + 14 + 38 + 11 = 65 mm.', hint: 'Add all five days.' },
               { id: 'q2', question: 'Mean (average) daily rainfall?', options: ['11 mm', '13 mm', '15 mm', '38 mm'], correctIndex: 1, explanation: '65 ÷ 5 = 13 mm/day.', hint: 'Total ÷ 5.' },
               { id: 'q3', question: 'Thursday’s share of the week’s rain is closest to…', options: ['38%', '46%', '58%', '65%'], correctIndex: 2, explanation: '38/65 ≈ 0.58 → 58%. One day brought more than half the rain!', hint: '38 out of 65.' },
               { id: 'q4', question: 'The best chart for showing rainfall day-by-day is a…', options: ['Pie chart', 'Bar chart', 'Single number', 'Scatter plot of one point'], correctIndex: 1, explanation: 'Bars compare amounts across categories (days) clearly.', hint: 'One bar per day.' },
               { id: 'q5', question: '72 km/h winds can snap branches. Before the peak, the family should…', options: ['Open all windows', 'Secure loose yard items (trampoline!) and charge phones', 'Go for a drive', 'Water the lawn'], correctIndex: 1, explanation: 'Storm prep: secure what can fly, charge what might be needed, stay indoors at the peak.', hint: 'What in OUR yard could blow away?' },
             ],
           },
+          {
+            kind: 'word-problem',
+            heading: 'Round 3 · Storm math',
+            intro: 'No answer choices here — work each one out from my weather-station log and type the number.',
+            items: [
+              {
+                id: 'w1',
+                visual: '🌡️📋',
+                problem: 'My porch thermometer read 21 °C on Tuesday and only 9 °C on Friday. How many degrees did the temperature drop?',
+                answer: 12,
+                unit: '°C',
+                hint: 'Subtract Friday’s reading from Tuesday’s.',
+                explanation: '21 − 9 = 12 degrees colder as the storm moved in.',
+              },
+              {
+                id: 'w2',
+                visual: '🌧️🌧️',
+                problem: 'My rain gauge caught 14 mm on Wednesday and 38 mm on Thursday. How much rain fell over the two days?',
+                answer: 52,
+                unit: 'mm',
+                hint: 'Add the two days together.',
+                explanation: '14 + 38 = 52 mm in two soggy days.',
+              },
+              {
+                id: 'w3',
+                visual: '🏆🌧️',
+                problem: 'Thursday dropped 38 mm of rain. The record for that date is 41 mm. How many more millimetres would have TIED the record?',
+                answer: 3,
+                unit: 'mm',
+                hint: 'How far is 38 from 41?',
+                explanation: '41 − 38 = 3 mm short of the record. So close!',
+              },
+              {
+                id: 'w4',
+                visual: '🌙🌡️',
+                problem: 'Overnight the temperature fell from 6 °C down to −3 °C. How many degrees did it fall?',
+                answer: 9,
+                unit: '°C',
+                hint: 'Count down from 6 to 0, then keep going to −3.',
+                explanation: '6 down to 0 is 6 degrees, then 0 down to −3 is 3 more: 6 + 3 = 9 degrees.',
+              },
+            ],
+          },
         ],
-      } satisfies QuizMissionParams,
+      } satisfies MixedMissionParams,
     },
     3: {
       wrapper: [
@@ -523,7 +845,7 @@ export const CH8_M1_WEATHER: Mission = {
             questions: [
               { id: 'q1', question: 'A cold front passing typically brings…', options: ['Slow drizzle for days', 'A sharp line of storms, then cooler clearing air', 'Instant heat', 'No weather change'], correctIndex: 1, explanation: 'Cold air wedges under warm air, forcing violent lifting — brief intense storms, then cool and clear.', hint: 'Sharp, fast, dramatic.' },
               { id: 'q2', question: 'In the Northern Hemisphere, air around a low-pressure system circulates…', options: ['Clockwise', 'Counter-clockwise', 'Straight down', 'Randomly'], correctIndex: 1, explanation: 'The Coriolis effect spins northern lows counter-clockwise.', hint: 'Opposite to a clock up here.' },
-              { id: 'q3', question: 'Lake Ontario affects Toronto’s storms by…', options: ['Blocking all rain', 'Moderating temperature and feeding moisture', 'Creating deserts', 'Nothing'], correctIndex: 1, explanation: 'Big water bodies damp temperature swings and add humidity — lake-effect weather is real.', hint: 'We covered the lake effect on the Kingston drive.' },
+              { id: 'q3', question: 'Lake Ontario affects Toronto’s storms by…', visual: '🌊🏙️', options: ['Blocking all rain', 'Moderating temperature and feeding moisture', 'Creating deserts', 'Nothing'], correctIndex: 1, explanation: 'Big water bodies damp temperature swings and add humidity — lake-effect weather is real.', hint: 'We covered the lake effect on the Kingston drive.' },
               { id: 'q4', question: 'Humidex measures…', options: ['Wind + cold', 'How hot it FEELS with humidity', 'Rain volume', 'Cloud height'], correctIndex: 1, explanation: 'Humidity blocks sweat evaporation, so 30° humid feels far worse — humidex captures that.', hint: 'Its winter cousin is wind chill.' },
               { id: 'q5', question: 'A 30% chance of rain means…', options: ['It will rain 30% of the day', '3 in 10 forecasts like this produce rain at your location', '30% of the city gets wet', 'Light rain only'], correctIndex: 1, explanation: 'It’s a probability across similar forecast situations — not a schedule or a coverage map.', hint: 'It’s about probability, not duration.' },
             ],
@@ -532,7 +854,7 @@ export const CH8_M1_WEATHER: Mission = {
             heading: 'Round 2 · Claims and evidence',
             intro: 'The data: this storm dropped 38 mm in one day. The record for the date was 41 mm (1954).',
             questions: [
-              { id: 'q1', question: 'Accurate headline for my article?', options: ['“Biggest storm in history!”', '“Storm nears 70-year-old daily record”', '“Rain falls”', '“Climate apocalypse arrives”'], correctIndex: 1, explanation: 'Precise and checkable: near the record, not past it. Accuracy beats drama.', hint: '38 vs 41 — did we break it?' },
+              { id: 'q1', question: 'Accurate headline for my article?', visual: '📰', options: ['“Biggest storm in history!”', '“Storm nears 70-year-old daily record”', '“Rain falls”', '“Climate apocalypse arrives”'], correctIndex: 1, explanation: 'Precise and checkable: near the record, not past it. Accuracy beats drama.', hint: '38 vs 41 — did we break it?' },
               { id: 'q2', question: 'One big storm proves the climate is changing: true?', options: ['Yes, obviously', 'No — single events are weather; climate claims need long-term trends', 'Yes if it rains again', 'Climate never changes'], correctIndex: 1, explanation: 'Climate = decades of statistics. Scientists link trends (more frequent extremes), not single storms, to climate change.', hint: 'Weather is a day; climate is a generation.' },
               { id: 'q3', question: 'My pressure log fell 12 hPa in 6 hours before the storm. As evidence, this is…', options: ['Useless', 'A textbook leading indicator worth charting', 'Proof of a hurricane', 'A sensor error for sure'], correctIndex: 1, explanation: 'A steep pressure fall is classic storm-approach data — great for the article’s chart.', hint: 'Remember Round 1, Q1.' },
               { id: 'q4', question: 'To compare this storm to history, the BEST source is…', options: ['A neighbour’s memory', 'Environment Canada’s historical climate data', 'A movie', 'One tweet'], correctIndex: 1, explanation: 'Official long-term records beat anecdotes for quantitative comparisons.', hint: 'Who keeps the measurements?' },
@@ -559,12 +881,13 @@ export const CH8_M2_WATER: Mission = {
     1: {
       wrapper: [
         { text: 'Caleb! Where does ALL this rain come from? And where does it GO? I found out and it’s a CIRCLE!' },
-        { text: 'Round 1: the water cycle. Round 2: water in our world.' },
+        { text: 'Round 1: the water cycle. Round 2: water in our world. Round 3: what comes next in the circle?' },
       ],
       pattern: 'drag-match',
       params: {
         rounds: [
           {
+            kind: 'drag-match',
             heading: 'Round 1 · The water circle',
             intro: 'Match each step of the water cycle to what happens.',
             pairs: [
@@ -577,29 +900,74 @@ export const CH8_M2_WATER: Mission = {
             stuckHint: 'Up (evaporation), clouds (condensation), down (precipitation), gather (collection)!',
           },
           {
+            kind: 'drag-match',
             heading: 'Round 2 · Water everywhere',
             intro: 'Match each water fact.',
             pairs: [
               { id: 'r2p1', item: { label: 'Most of Earth’s water is in…', shape: 'huge-wide' }, slot: { label: 'The oceans (salty!)' } },
-              { id: 'r2p2', item: { label: 'Clouds are made of…', shape: 'wide-short' }, slot: { label: 'Tiny water droplets' } },
-              { id: 'r2p3', item: { label: 'Snow is…', shape: 'small-square' }, slot: { label: 'Frozen water crystals' } },
-              { id: 'r2p4', item: { label: 'Puddles disappear because of…', shape: 'small-square' }, slot: { label: 'Evaporation' } },
+              { id: 'r2p2', item: { label: 'Clouds are made of…', shape: 'wide-short', emoji: '☁️' }, slot: { label: 'Tiny water droplets' } },
+              { id: 'r2p3', item: { label: 'Snow is…', shape: 'small-square', emoji: '❄️' }, slot: { label: 'Frozen water crystals' } },
+              { id: 'r2p4', item: { label: 'Puddles disappear because of…', shape: 'small-square', emoji: '💧' }, slot: { label: 'Evaporation' } },
               { id: 'r2p5', item: { label: 'The rain today might once have been…', shape: 'wide-short' }, slot: { label: 'Ocean water far away' } },
             ],
             stuckHint: 'The same water goes around and around — dinosaurs drank it too!',
           },
+          {
+            kind: 'pattern-puzzle',
+            heading: 'Round 3 · Round and round the water goes',
+            intro: 'The water circle repeats FOREVER. What comes next?',
+            items: [
+              {
+                id: 'p1',
+                prompt: 'Water, cloud, rain, water, cloud… what comes next?',
+                sequence: ['💧', '☁️', '🌧️', '💧', '☁️'],
+                options: ['🌧️', '☀️', '💧', '❄️'],
+                correctIndex: 0,
+                hint: 'After the cloud fills up, what falls down?',
+                explanation: 'The circle goes 💧 → ☁️ → 🌧️ — the rain falls next, then it starts all over!',
+              },
+              {
+                id: 'p2',
+                prompt: 'Sea, sunshine, cloud… the cycle repeats. What comes next?',
+                sequence: ['🌊', '☀️', '☁️', '🌊', '☀️'],
+                options: ['☁️', '🌊', '🌈', '❄️'],
+                correctIndex: 0,
+                hint: 'The sun warms the sea — then what forms up in the sky?',
+                explanation: 'The sun turns sea water into vapour, and the vapour cools into a ☁️.',
+              },
+              {
+                id: 'p3',
+                prompt: 'The rain is getting heavier! What comes next?',
+                sequence: ['💧', '💧💧', '💧💧💧'],
+                options: ['💧', '💧💧', '💧💧💧💧', '💧💧💧💧💧'],
+                correctIndex: 2,
+                hint: 'One more drop joins each time.',
+                explanation: 'The drops grow by one each step: 1, 2, 3… then 4!',
+              },
+              {
+                id: 'p4',
+                prompt: 'Rain, rainbow, rain, rainbow… what comes next?',
+                sequence: ['🌧️', '🌈', '🌧️', '🌈', '🌧️'],
+                options: ['🌧️', '🌈', '☁️', '☀️'],
+                correctIndex: 1,
+                hint: 'What do we run outside to look for after the rain?',
+                explanation: 'After 🌧️ comes 🌈 — sunshine shining through raindrops makes a rainbow.',
+              },
+            ],
+          },
         ],
-      } satisfies DragMatchMissionParams,
+      } satisfies MixedMissionParams,
     },
     2: {
       wrapper: [
         { text: 'Caleb. Storm week made me a water-cycle expert. Did you know rivers are basically the sky’s drainpipes?' },
-        { text: 'Round 1: cycle vocabulary. Round 2: watersheds and our Great Lakes.' },
+        { text: 'Round 1: cycle vocabulary. Round 2: watersheds and our Great Lakes. Round 3: rain-barrel math.' },
       ],
       pattern: 'drag-match',
       params: {
         rounds: [
           {
+            kind: 'drag-match',
             heading: 'Round 1 · Cycle vocabulary',
             intro: 'The scientific terms, matched.',
             pairs: [
@@ -613,6 +981,7 @@ export const CH8_M2_WATER: Mission = {
             stuckHint: 'Trees “sweat” too — that’s transpiration.',
           },
           {
+            kind: 'drag-match',
             heading: 'Round 2 · Watersheds & Great Lakes',
             intro: 'Where OUR water goes.',
             pairs: [
@@ -624,8 +993,51 @@ export const CH8_M2_WATER: Mission = {
             ],
             stuckHint: 'Everything flows downhill to the lake — including what goes in the drains.',
           },
+          {
+            kind: 'word-problem',
+            heading: 'Round 3 · Rain-barrel math',
+            intro: 'Storm week filled every bucket we own. Work these out and type the numbers.',
+            items: [
+              {
+                id: 'w1',
+                visual: '🛢️🌧️',
+                problem: 'Our rain barrel holds 200 L. It already had 60 L in it, and the storm added 85 L more. How many litres of space are left?',
+                answer: 55,
+                unit: 'L',
+                hint: 'Add what’s in the barrel first, then subtract from 200.',
+                explanation: '60 + 85 = 145 L inside, and 200 − 145 = 55 L of space left.',
+              },
+              {
+                id: 'w2',
+                visual: '🏠💧',
+                problem: 'Each of our 4 downspouts drained 48 L into buckets during the storm. How many litres did they drain in all?',
+                answer: 192,
+                unit: 'L',
+                hint: 'Four groups of 48 — multiply.',
+                explanation: '4 × 48 = 192 L of roof water.',
+              },
+              {
+                id: 'w3',
+                visual: '☀️💧',
+                problem: 'A giant 18 L puddle shrinks by 3 L every hour once the sun comes out. How many hours until it has evaporated completely?',
+                answer: 6,
+                unit: 'hours',
+                hint: 'How many 3s fit into 18?',
+                explanation: '18 ÷ 3 = 6 hours — evaporation at work!',
+              },
+              {
+                id: 'w4',
+                visual: '🪴🚿',
+                problem: 'Caleb waters the garden with a 12 L can filled from the rain barrel. He fills it 5 times. How many litres does he use?',
+                answer: 60,
+                unit: 'L',
+                hint: 'Five cans of 12 L each.',
+                explanation: '5 × 12 = 60 L of free sky water for the garden.',
+              },
+            ],
+          },
         ],
-      } satisfies DragMatchMissionParams,
+      } satisfies MixedMissionParams,
     },
     3: {
       wrapper: [

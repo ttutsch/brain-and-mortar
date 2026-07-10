@@ -11,6 +11,7 @@ export function countMissionItems(mission: Mission, tier: Tier): number {
   for (const round of params.rounds) {
     if (Array.isArray(round.pairs)) n += round.pairs.length;
     else if (Array.isArray(round.questions)) n += round.questions.length;
+    else if (Array.isArray(round.items)) n += round.items.length; // counting / word-problem / pattern-puzzle
     else n += 1; // code-robot / path-planner: one puzzle per round
   }
   return Math.max(1, n);
