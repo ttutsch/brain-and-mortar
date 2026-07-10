@@ -42,6 +42,17 @@ export function isFamilyClaimed(account: FamilyAccount | null): boolean {
   return !!account?.parentPasswordHash;
 }
 
+/**
+ * Whether the Parent Zone should require an unlock. When cloud sync is available
+ * the grown-up's cloud account is the single credential; otherwise fall back to
+ * the legacy local password. (Unified — replaces the old two-password split.)
+ */
+export function parentZoneLocked(account: FamilyAccount | null, cloudConfigured: boolean): boolean {
+  if (!account) return false;
+  if (cloudConfigured && account.cloudRole === 'owner' && !!account.parentEmail) return true;
+  return !!account.parentPasswordHash;
+}
+
 export interface PlayerProfile {
   id: string;
   familyId: string;

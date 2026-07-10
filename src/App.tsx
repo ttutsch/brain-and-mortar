@@ -1,19 +1,21 @@
 import { useCallback, useEffect, useState } from 'react';
 import './styles/components.css';
 import type { FamilyAccount, Mission, PlayerProfile, PlayerProgress, PlayerSettings } from './types';
-import { migrateProgress, unclaimedFamily, isFamilyClaimed } from './types';
+import { migrateProgress, unclaimedFamily, parentZoneLocked } from './types';
 import { getStorage } from './storage';
 import { generateId } from './lib/crypto';
 import { isCloudConfigured } from './lib/supabase';
 import {
-  signUpOwner, createFamily, ensureAnonSession, joinFamily,
+  signUpOwner, signInOwner, createFamily, ensureAnonSession, joinFamily,
   pushProfile, pushProgress, pullFamily, signOutCloud,
+  requestPasswordReset, onPasswordRecovery,
   type CloudSnapshot,
 } from './lib/cloud';
 import { effectiveTier } from './lib/tier';
 import { applyMissionOutcome, applyPurchase, applyTripOutcome } from './lib/missionFlow';
 import type { Cosmetic } from './data/cosmetics';
 import { ParentSetup } from './components/ParentSetup';
+import { SetNewPassword } from './components/SetNewPassword';
 import { ProfileCreate } from './components/ProfileCreate';
 import { ProfilePicker } from './components/ProfilePicker';
 import { HomeView } from './components/HomeView';
@@ -44,6 +46,8 @@ export function App() {
   /** House item (or trampoline coda) that just landed — drives the glow celebration. */
   const [celebrateItemId, setCelebrateItemId] = useState<string | null>(null);
   const [subview, setSubview] = useState<Subview>('picker');
+  /** True when the app was opened via a password-reset email link. */
+  const [passwordRecovery, setPasswordRecovery] = useState(false);
 
   const refreshProfiles = useCallback(async () => {
     const list = await getStorage().listProfiles();
@@ -70,6 +74,9 @@ export function App() {
     })();
     return () => { cancelled = true; };
   }, []);
+
+  // A password-reset email link returns to the app in recovery mode.
+  useEffect(() => onPasswordRecovery(() => setPasswordRecovery(true)), []);
 
   // Load progress whenever the active profile changes; migrate older shapes.
   useEffect(() => {
@@ -253,6 +260,18 @@ export function App() {
     );
   }
 
+  // Arrived via a password-reset email link — take priority over everything.
+  if (passwordRecovery) {
+    return (
+      <SetNewPassword
+        onDone={() => {
+          setPasswordRecovery(false);
+          setSubview(activeProfile ? 'home' : 'picker');
+        }}
+      />
+    );
+  }
+
   const isFirstProfile = profiles.length === 0;
 
   if (isFirstProfile || subview === 'create-profile') {
@@ -279,11 +298,22 @@ export function App() {
   }
 
   if (subview === 'parent-zone-entry') {
+    const cloudOwner = isCloudConfigured() && account.cloudRole === 'owner' && !!account.parentEmail;
     return (
       <ParentZoneEntry
         account={account}
+        cloudOwner={cloudOwner}
         onUnlock={() => setSubview('parent-zone')}
         onCancel={() => setSubview(activeProfile ? 'home' : 'picker')}
+        onCloudUnlock={(password) => signInOwner(account.parentEmail!, password).then(() => {})}
+        onForgotPassword={() => requestPasswordReset(account.parentEmail!)}
+        onResetLocalPassword={async () => {
+          const updated: FamilyAccount = { ...account };
+          delete updated.parentPasswordHash;
+          delete updated.parentPasswordSalt;
+          await getStorage().saveFamilyAccount(updated);
+          setAccount(updated);
+        }}
       />
     );
   }
@@ -376,7 +406,7 @@ export function App() {
             setSubview('picker');
           }}
           onOpenParentZone={() =>
-            setSubview(isFamilyClaimed(account) ? 'parent-zone-entry' : 'parent-zone')
+            setSubview(parentZoneLocked(account, isCloudConfigured()) ? 'parent-zone-entry' : 'parent-zone')
           }
           onStartMission={(m) => setActiveMission(m)}
           onStartTrip={(t) => setActiveTrip({ trip: t, replay: false })}

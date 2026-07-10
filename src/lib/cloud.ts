@@ -36,6 +36,32 @@ export async function signOutCloud() {
   await client().auth.signOut();
 }
 
+/** Send a password-reset email. The link returns to this app in recovery mode. */
+export async function requestPasswordReset(email: string) {
+  const redirectTo = window.location.origin + window.location.pathname;
+  const { error } = await client().auth.resetPasswordForEmail(email.trim().toLowerCase(), { redirectTo });
+  if (error) throw error;
+}
+
+/** Set a new password for the currently-authenticated user (recovery flow). */
+export async function updatePassword(newPassword: string) {
+  const { error } = await client().auth.updateUser({ password: newPassword });
+  if (error) throw error;
+}
+
+/**
+ * Subscribe to the PASSWORD_RECOVERY auth event (fired when the user returns via
+ * a reset-email link). Returns an unsubscribe function.
+ */
+export function onPasswordRecovery(cb: () => void): () => void {
+  const c = getSupabase();
+  if (!c) return () => {};
+  const { data } = c.auth.onAuthStateChange((event) => {
+    if (event === 'PASSWORD_RECOVERY') cb();
+  });
+  return () => data.subscription.unsubscribe();
+}
+
 /** Ensure there's a session — anonymous if needed — so a kid device can join. */
 export async function ensureAnonSession(): Promise<void> {
   const c = client();
